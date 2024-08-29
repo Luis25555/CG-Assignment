@@ -9,11 +9,14 @@
 //variables
 float angle = 0.2;// angle for rotation of whole picture
 float tSpeed = 0.2;//transformation speed
+float tx = 0, ty = 0, tz = 0;
 #define WINDOW_TITLE "OpenGL Window"
 void drawSpehere(float rad);
 void drawCylinder(double br, double tr, double h);
 void drawCylinder2(double br, double tr, double h);
 void drawDisk(double inr, double otr);
+void cube2(float size); //draw rectangular cube
+void cube(float size); // draw square cube
 
 LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -80,73 +83,9 @@ void display()
 	//glLoadIdentity();
 
 
-
-	//all
-	glPushMatrix();
-
-	glRotatef(angle, 0, 1, 0);
-	angle += tSpeed;
-
-	//cone
-	glPushMatrix();
-	glTranslatef(0, -0.81, 0);
-	glRotatef(-90, 1, 0, 0);
-	glColor3f(0.804, 0.635, 0.435);
-	drawCylinder(0, 0.2, 0.5);
-	glPopMatrix(); //cone
-
-	//cone
-	glPushMatrix();
-	glTranslatef(0, -0.81, 0);
-	glRotatef(-90, 1, 0, 0);
-	glColor3f(0.898, 0.816, 0.749);
-	drawCylinder2(0, 0.2, 0.5);
-	glPopMatrix(); //cone
-
-
-	//sphere 2
-	glPushMatrix();
-	glTranslatef(0, -0.18, 0);
-	glColor3f(0.953, 0.627, 0.741);
-	drawSpehere(0.19);
-	glPopMatrix(); // sphere 2
-
-	//sphere 1
-	glPushMatrix();
-	glTranslatef(0, -0.3, 0);
-	glColor3f(0.98, 0.965, 0.89);
-	drawSpehere(0.21);
-	glPopMatrix(); // sphere 1
-
-	//topings
-
-	//stick
-	glPushMatrix();
-	glTranslatef(0, -0.3, 0);
-	glRotatef(-45, 1, 0, 0);
-	glColor3f(0.804, 0.635, 0.435);
-	drawCylinder2(0.03, 0.03, 0.4);
-	glPopMatrix(); //cone
-
-	//sphere cherry
-	glPushMatrix();
-	glTranslatef(0.13, -0.07, 0);
-	glColor3f(1, 0, 0);
-	drawSpehere(0.06);
-	glLineWidth(2);
-	glBegin(GL_LINES);
-
-	glVertex3f(0, 0, 0);
-	glVertex3f(0.08, 0.12, 0);
-	glVertex3f(0.08, 0.12, 0);
-	glVertex3f(0.15, 0.15, 0);
-	glEnd();
-	glPopMatrix(); // sphere 1 cherry
-
-
-
-
-	glPopMatrix(); //all
+	glRotatef(0.2, 1, 1, 1);
+	cube2(0.2);
+	cube(0.3);
 
 	//--------------------------------
 	//	End of OpenGL drawing
@@ -251,3 +190,110 @@ void drawDisk(double inr, double otr) {
 	gluDeleteQuadric(disk);
 }
 
+void cube2(float size) {
+	//cube 2
+	//glLoadIdentity();
+	
+	glPushMatrix();
+	
+	glRotatef(angle, 0, 0, 1);
+	glTranslatef(tx, ty, 0);
+	
+	//glTranslatef();
+	glBegin(GL_LINE_LOOP);//front
+	glVertex3f((2 * size), size, size);// Top-left
+	glVertex3f((2 * size), 0, size);   // Top-right
+	glVertex3f((2 * size), 0, 0);      // Bottom-right
+	glVertex3f((2 * size), size, 0);   // Bottom-left
+	glEnd();
+
+	glBegin(GL_LINE_LOOP);//top
+	glVertex3f((2 * size), size, 0);   // front-right
+	glVertex3f((2 * size), size, size);      // front-left
+	glVertex3f((4 * size), size, size);   // Back-left
+	glVertex3f((4 * size), size, 0);      // Back-right
+	glEnd();
+
+
+	glBegin(GL_LINE_LOOP);//right
+	glVertex3f((2*size), size, 0);   // top-left
+	glVertex3f((2 * size), 0, 0);      //btm-left
+	glVertex3f((4 * size), 0, 0);  //btm-right
+	glVertex3f((4 * size), size, 0);      //top-right
+	glEnd();
+
+	glBegin(GL_LINE_LOOP);//btm
+	glVertex3f((2 * size), 0, 0);   // top-left
+	glVertex3f((2 * size), 0, size);      //btm-left
+	glVertex3f((4 * size), 0, size);  //btm-right
+	glVertex3f((4 * size), 0, 0);      //top-right
+	glEnd();
+
+	glBegin(GL_LINE_LOOP);//left
+	glVertex3f((2 * size), 0, size);   // top-left
+	glVertex3f((2 * size), size, size);      //btm-left
+	glVertex3f((4 * size), size, size);  //btm-right
+	glVertex3f((4 * size), 0, size);      //top-right
+	glEnd();
+
+
+	glBegin(GL_LINE_LOOP); //back
+	glVertex3f((4 * size), 0, 0);// Bottom-right
+	glVertex3f((4 * size), 0, size);   // Bottom-left
+	glVertex3f((4 * size), size, size);      // Top-right
+	glVertex3f((4 * size), size, 0);   // Top-left
+	glEnd();
+
+
+	glPopMatrix();
+
+
+}
+
+
+void cube(float size) {
+	glBegin(GL_QUADS);
+	//face1
+	glColor3f(1, 1, 0);
+	glVertex3f(0, 0, size);
+	glVertex3f(size, 0, size);
+	glVertex3f(size, 0, 0);
+	glVertex3f(0, 0, 0);
+
+	//face 2
+	glColor3f(1, 1, 1);
+	glVertex3f(0, 0, 0);
+	glVertex3f(0, size, 0);
+	glVertex3f(0, size, size);
+	glVertex3f(0, 0, size);
+
+	//face3
+	glColor3f(1, 0, 0);
+	glVertex3f(0, 0, size);
+	glVertex3f(size, 0, size);
+	glVertex3f(size, size, size);
+	glVertex3f(0, size, size);
+
+	//face4
+	glColor3f(0, 1, 0);
+	glVertex3f(0, size, size);
+	glVertex3f(0, size, 0);
+	glVertex3f(size, size, 0);
+	glVertex3f(size, size, size);
+
+	//face5
+	glColor3f(1, 0, 1);
+	glVertex3f(size, size, size);
+	glVertex3f(size, 0, size);
+	glVertex3f(size, 0, 0);
+	glVertex3f(size, size, 0);
+
+	//face 6
+	glColor3f(0, 0, 1);
+	glVertex3f(size, size, 0);
+	glVertex3f(size, 0, 0);
+	glVertex3f(0, 0, 0);
+	glVertex3f(0, size, 0);
+
+	glEnd();
+}
