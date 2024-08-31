@@ -10,6 +10,14 @@
 float angle = 0.2;// angle for rotation of whole picture
 float tSpeed = 0.2;//transformation speed
 float tx = 0, ty = 0, tz = 0;
+bool isOrtho = true;
+float ONear = -10.0;
+float OFar = 10.0;
+float PNear = 1.0;
+float PFar = 21.0;
+float ptx = -2, pty = 0, ptSpeed = 0.5; // projection translation matrix
+float ptrx = 90, ptry = 0, prSpeed = 1;//prjection rotation angle
+
 #define WINDOW_TITLE "OpenGL Window"
 void drawSpehere(float rad);
 void drawCylinder(double br, double tr, double h);
@@ -17,6 +25,7 @@ void drawCylinder2(double br, double tr, double h);
 void drawDisk(double inr, double otr);
 void cube2(float size); //draw rectangular cube
 void cube(float size); // draw square cube
+void projection();
 
 LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -29,7 +38,17 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 	case WM_KEYDOWN:
 		if (wParam == VK_ESCAPE) PostQuitMessage(0);
 		else if ((wParam == VK_LEFT))  tSpeed = 0.2;
-		else if ((wParam == VK_SPACE)) { tSpeed = 0; }
+		else if ((wParam == VK_SPACE)) { tx = 0;tz = 0;ty = 0; }
+		else if ((wParam == 'W')) ptrx += prSpeed;
+		else if ((wParam == 'S')) ptrx -= prSpeed;
+		else if ((wParam == 'A')) ptx -= ptSpeed;
+		else if ((wParam == 'D')) ptx += ptSpeed;
+		else if ((wParam == 'Q')) ptry -= prSpeed;
+		else if ((wParam == 'E')) ptry += prSpeed;
+		else if ((wParam == VK_UP))  tz += tSpeed;
+		else if ((wParam == VK_DOWN))  tz -= tSpeed;
+
+
 		break;
 
 	default:
@@ -81,12 +100,38 @@ void display()
 	glEnable(GL_DEPTH_TEST); //enable the depth test
 	glMatrixMode(GL_MODELVIEW_MATRIX);
 	//glLoadIdentity();
+	projection();
+	glPushMatrix(); //all
+	glTranslatef(tx, ty, tz);
+	
+	//body block
+	// top left cube
+	cube2(1);
+	
+	glPushMatrix(); //right
+	glTranslatef(0, 0, 1);
+	// top right cube
+	cube2(1);
+	glPopMatrix();//right
+	
+	//btm left cube
+	glPushMatrix();
 
+	glTranslatef(0, 1, 0);
+	cube2(1);
 
-	glRotatef(0.2, 1, 1, 1);
-	cube2(0.2);
-	cube(0.3);
+	glPopMatrix();
+	
+	//btm right cube
+	glPushMatrix();
 
+	glTranslatef(0, 1, 1);
+	cube2(1);
+
+	glPopMatrix();
+	
+	
+	glPopMatrix();//all
 	//--------------------------------
 	//	End of OpenGL drawing
 	//--------------------------------
@@ -107,7 +152,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 	if (!RegisterClassEx(&wc)) return false;
 
 	HWND hWnd = CreateWindow(WINDOW_TITLE, WINDOW_TITLE, WS_OVERLAPPEDWINDOW,
-		700, 10, 800, 800,
+		700, 10, 900, 900,
 		NULL, NULL, wc.hInstance, NULL);
 
 	//--------------------------------
@@ -177,7 +222,7 @@ void drawCylinder2(double br, double tr, double h) {
 void drawSpehere(float rad) {
 	GLUquadricObj* sphere = NULL;
 	sphere = gluNewQuadric();
-	gluQuadricDrawStyle(sphere, GLU_FILL);
+	gluQuadricDrawStyle(sphere, GLU_LINE);
 	gluSphere(sphere, rad, 30, 30);
 	gluDeleteQuadric(sphere);
 }
@@ -296,4 +341,25 @@ void cube(float size) {
 	glVertex3f(0, size, 0);
 
 	glEnd();
+}
+
+void projection() {
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	//glTranslatef(ptx, pty, 0);
+	//glRotatef(pry, 0, 1, 0);
+
+	if (isOrtho) {
+		glOrtho(-10.0, 10.0, -10.0, 10.0, ONear, OFar);
+	}
+	else {
+		gluPerspective(20, 1, -1, 1);
+		glFrustum(-10.0, 10.0, -10.0, 10.0, PNear, PFar);
+	}
+
+	glTranslatef(ptx, pty, 0);
+	glRotatef(ptrx, 1, 0, 0);
+	glRotatef(ptry, 0, 1, 0);
+
 }
