@@ -44,15 +44,15 @@ float OFar = 10.0;
 float PNear = 1.0;
 float PFar = 21.0;
 float ptx = -2, pty = 0, ptSpeed = 0.5; // projection translation matrix
-float ptrx = 90, ptry = 0, prSpeed = 1;//prjection rotation angle
+float ptrx = 45, ptry = -45, prSpeed = 1;//prjection rotation angle
 
 #define WINDOW_TITLE "OpenGL Window"
-void drawSpehere(float rad);
-void drawCylinder(double br, double tr, double h);
-void drawCylinder2(double br, double tr, double h);
-void drawDisk(double inr, double otr);
-void cube2(float size); //draw rectangular cube
-void cube(float size); // draw square cube
+void drawSpehere(float rad, float r, float g, float b);
+void drawCylinder(double br, double tr, double h, float r, float g, float b);
+void drawCylinder2(double br, double tr, double h, float r, float g, float b);
+void drawDisk(double inr, double otr, float r, float g, float b);
+void cube2(float hg, float wd, float lg, float r, float g, float b); //draw rectangular cube
+
 void projection();
 
 LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -66,7 +66,7 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 	case WM_KEYDOWN:
 		if (wParam == VK_ESCAPE) PostQuitMessage(0);
 		else if ((wParam == VK_LEFT))  tSpeed = 0.2;
-		else if ((wParam == VK_SPACE)) { tx = 0;tz = 0;ty = 0; ptrx = 0; ptry = 0; ptx = -2;pty = 0; }
+		else if ((wParam == VK_SPACE)) { tx = 0;tz = 0;ty = 0; ptrx = 45; ptry = -45; ptx = 0;pty = 0; }
 		else if ((wParam == 'W')) ptrx += prSpeed;
 		else if ((wParam == 'S')) ptrx -= prSpeed;
 		else if ((wParam == 'A')) ptx -= ptSpeed;
@@ -133,30 +133,30 @@ void display()
 	glTranslatef(tx, ty, tz);
 	
 	//body block
-	// top left cube
-	cube2(1);
+	// btm left cube
+	cube2(1,1,2,1,1,1);
 	
-	glPushMatrix(); //right
-	glTranslatef(0, 0, 1);
-	// top right cube
-	cube2(1);
-	glPopMatrix();//right
-	
-	//btm left cube
-	glPushMatrix();
+	//glPushMatrix(); //right
+	//glTranslatef(0, 0, 1);
+	//// btm right cube
+	//cube2(1,1,1,1);
+	//glPopMatrix();//right
+	//
+	////top left cube
+	//glPushMatrix();
 
-	glTranslatef(0, 1, 0);
-	cube2(1);
+	//glTranslatef(0, 1, 0);
+	//cube2(1,1,0,0);
 
-	glPopMatrix();
-	
-	//btm right cube
-	glPushMatrix();
+	//glPopMatrix();
+	//
+	////top right cube
+	//glPushMatrix();
 
-	glTranslatef(0, 1, 1);
-	cube2(1);
+	//glTranslatef(0, 1, 1);
+	//cube2(1,1,1,0);
 
-	glPopMatrix();
+	//glPopMatrix();
 	
 	
 	glPopMatrix();//all
@@ -228,7 +228,8 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 }
 //--------------------------------------------------------------------
 
-void drawCylinder(double br, double tr, double h) {
+void drawCylinder(double br, double tr, double h, float r, float g, float b) {
+	glColor3f(r, g, b);
 	GLUquadricObj* cylinder = NULL;
 	cylinder = gluNewQuadric();
 	glLineWidth(2);
@@ -238,7 +239,8 @@ void drawCylinder(double br, double tr, double h) {
 
 }
 
-void drawCylinder2(double br, double tr, double h) {
+void drawCylinder2(double br, double tr, double h, float r, float g, float b) {
+	glColor3f(r, g, b);
 	GLUquadricObj* cylinder = NULL;
 	cylinder = gluNewQuadric();
 	gluQuadricDrawStyle(cylinder, GLU_FILL);
@@ -247,7 +249,8 @@ void drawCylinder2(double br, double tr, double h) {
 
 }
 
-void drawSpehere(float rad) {
+void drawSpehere(float rad, float r, float g, float b) {
+	glColor3f(r, g, b);
 	GLUquadricObj* sphere = NULL;
 	sphere = gluNewQuadric();
 	gluQuadricDrawStyle(sphere, GLU_LINE);
@@ -255,7 +258,8 @@ void drawSpehere(float rad) {
 	gluDeleteQuadric(sphere);
 }
 
-void drawDisk(double inr, double otr) {
+void drawDisk(double inr, double otr, float r, float g, float b) {
+	glColor3f(r, g, b);
 	GLUquadricObj* disk = NULL;
 	disk = gluNewQuadric();
 	gluQuadricDrawStyle(disk, GLU_LINE);
@@ -263,113 +267,69 @@ void drawDisk(double inr, double otr) {
 	gluDeleteQuadric(disk);
 }
 
-void cube2(float size) {
+void cube2(float hg, float wd, float lg  , float r, float g, float b) {
 	//cube 2
 	//glLoadIdentity();
+	glColor3f(r, g, b);
 	
-	glPushMatrix();
-	
-	glRotatef(angle, 0, 0, 1);
-	glTranslatef(tx, ty, 0);
 	
 	//glTranslatef();
-	glBegin(GL_LINE_LOOP);//front
-	glVertex3f((2 * size), size, size);// Top-left
-	glVertex3f((2 * size), 0, size);   // Top-right
-	glVertex3f((2 * size), 0, 0);      // Bottom-right
-	glVertex3f((2 * size), size, 0);   // Bottom-left
+	glBegin(GL_POLYGON);//front
+	glVertex3f(0, hg, 0);	// Top-left
+	glVertex3f(wd,hg , 0);  // Top-right
+	glVertex3f(wd, 0, 0);   // Bottom-right
+	glVertex3f(0, 0, 0);	// Bottom-left
 	glEnd();
-
-	glBegin(GL_LINE_LOOP);//top
-	glVertex3f((2 * size), size, 0);   // front-right
-	glVertex3f((2 * size), size, size);      // front-left
-	glVertex3f((4 * size), size, size);   // Back-left
-	glVertex3f((4 * size), size, 0);      // Back-right
-	glEnd();
-
-
-	glBegin(GL_LINE_LOOP);//right
-	glVertex3f((2*size), size, 0);   // top-left
-	glVertex3f((2 * size), 0, 0);      //btm-left
-	glVertex3f((4 * size), 0, 0);  //btm-right
-	glVertex3f((4 * size), size, 0);      //top-right
-	glEnd();
-
-	glBegin(GL_LINE_LOOP);//btm
-	glVertex3f((2 * size), 0, 0);   // top-left
-	glVertex3f((2 * size), 0, size);      //btm-left
-	glVertex3f((4 * size), 0, size);  //btm-right
-	glVertex3f((4 * size), 0, 0);      //top-right
-	glEnd();
-
-	glBegin(GL_LINE_LOOP);//left
-	glVertex3f((2 * size), 0, size);   // top-left
-	glVertex3f((2 * size), size, size);      //btm-left
-	glVertex3f((4 * size), size, size);  //btm-right
-	glVertex3f((4 * size), 0, size);      //top-right
+	
+	glBegin(GL_POLYGON);//btm
+	glVertex3f(0, 0, 0);   // front-left
+	glVertex3f(0, 0, lg);      // back-left
+	glVertex3f(wd,0,lg);   // Back-right
+	glVertex3f(wd, 0, 0);      // front -right
 	glEnd();
 
 
-	glBegin(GL_LINE_LOOP); //back
-	glVertex3f((4 * size), 0, 0);// Bottom-right
-	glVertex3f((4 * size), 0, size);   // Bottom-left
-	glVertex3f((4 * size), size, size);      // Top-right
-	glVertex3f((4 * size), size, 0);   // Top-left
+	glBegin(GL_POLYGON);//right
+	
+	glVertex3f(wd, 0, 0);   // front btm
+	glVertex3f(wd,hg , 0);      //front top
+	glVertex3f(wd, hg, lg);  //back-top
+	glVertex3f(wd, 0, lg);      //back-btm
+	glEnd();
+
+	glBegin(GL_POLYGON);//back
+	
+	glVertex3f(wd, 0, lg);  // btm - right
+	glVertex3f(wd, hg, lg); //top-right
+	glVertex3f(0, hg, lg);	//top-left
+	glVertex3f(0, 0, lg);   //btm-left
+	glEnd();
+
+	glBegin(GL_POLYGON);//left
+	
+	glVertex3f(0, 0, lg);   // back - btm
+	glVertex3f(0,0,0 );      //front - btm
+	glVertex3f(0, hg, 0);  //front - top
+	glVertex3f(0, hg,lg );      //top-right
 	glEnd();
 
 
-	glPopMatrix();
+	glBegin(GL_POLYGON); //top
+	
+	glVertex3f(0, hg, lg);   // back - btm
+	glVertex3f(wd, hg, lg);      //front - btm
+	glVertex3f(wd, hg, 0);  //front - top
+	glVertex3f(0, hg, 0);      //top-right
+	glEnd();
+
+
+	
 
 
 }
 
 
-void cube(float size) {
-	glBegin(GL_QUADS);
-	//face1
-	glColor3f(1, 1, 0);
-	glVertex3f(0, 0, size);
-	glVertex3f(size, 0, size);
-	glVertex3f(size, 0, 0);
-	glVertex3f(0, 0, 0);
 
-	//face 2
-	glColor3f(1, 1, 1);
-	glVertex3f(0, 0, 0);
-	glVertex3f(0, size, 0);
-	glVertex3f(0, size, size);
-	glVertex3f(0, 0, size);
-
-	//face3
-	glColor3f(1, 0, 0);
-	glVertex3f(0, 0, size);
-	glVertex3f(size, 0, size);
-	glVertex3f(size, size, size);
-	glVertex3f(0, size, size);
-
-	//face4
-	glColor3f(0, 1, 0);
-	glVertex3f(0, size, size);
-	glVertex3f(0, size, 0);
-	glVertex3f(size, size, 0);
-	glVertex3f(size, size, size);
-
-	//face5
-	glColor3f(1, 0, 1);
-	glVertex3f(size, size, size);
-	glVertex3f(size, 0, size);
-	glVertex3f(size, 0, 0);
-	glVertex3f(size, size, 0);
-
-	//face 6
-	glColor3f(0, 0, 1);
-	glVertex3f(size, size, 0);
-	glVertex3f(size, 0, 0);
-	glVertex3f(0, 0, 0);
-	glVertex3f(0, size, 0);
-
-	glEnd();
-}
 
 void projection() {
 	glMatrixMode(GL_PROJECTION);
