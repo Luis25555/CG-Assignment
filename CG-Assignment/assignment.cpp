@@ -46,13 +46,23 @@ float PFar = 21.0;
 float ptx = -2, pty = 0, ptSpeed = 0.5; // projection translation matrix
 float ptrx = 45, ptry = -45, prSpeed = 1;//prjection rotation angle
 
+/*
+hg = height of the cube
+wd = width of the cube
+lg = length of the cube
+*/
+
 #define WINDOW_TITLE "OpenGL Window"
 void drawSpehere(float rad, float r, float g, float b);
 void drawCylinder(double br, double tr, double h, float r, float g, float b);
 void drawCylinder2(double br, double tr, double h, float r, float g, float b);
 void drawDisk(double inr, double otr, float r, float g, float b);
-void cube2(float hg, float wd, float lg, float r, float g, float b); //draw rectangular cube
-
+void cube(float hg, float wd, float lg, float r, float g, float b); //draw rectangular cube
+/*
+hg = height of the cube
+wd = width of the cube
+lg = length of the cube
+*/
 void projection();
 
 LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -134,32 +144,45 @@ void display()
 	
 	//body block
 	// btm left cube
-	cube2(1,1,2,1,1,1);
+	cube(1,1,2, 0.8, 0.761, 0.737);
+
+	// btm right cube
+	glPushMatrix(); //right
+	glTranslatef(1, 0, 0);
+	cube(1,1,2, 0.8, 0.761, 0.737);
+	glPopMatrix();//right
 	
-	//glPushMatrix(); //right
-	//glTranslatef(0, 0, 1);
-	//// btm right cube
-	//cube2(1,1,1,1);
-	//glPopMatrix();//right
-	//
-	////top left cube
-	//glPushMatrix();
+	//top left cube
+	glPushMatrix();
 
-	//glTranslatef(0, 1, 0);
-	//cube2(1,1,0,0);
+	glTranslatef(0, 1, 0);
+	cube(1,1,2,0.8,0.761, 0.737);
 
-	//glPopMatrix();
-	//
-	////top right cube
-	//glPushMatrix();
+	glPopMatrix();
+	
+	//top right cube
+	glPushMatrix();
 
-	//glTranslatef(0, 1, 1);
-	//cube2(1,1,1,0);
+	glTranslatef(1, 1, 0);
+	cube(1,1,2, 0.8, 0.761, 0.737);
 
-	//glPopMatrix();
+	glPopMatrix();
 	
 	
+
+
+
+
+
+
+
+
+
+
+
+
 	glPopMatrix();//all
+
 	//--------------------------------
 	//	End of OpenGL drawing
 	//--------------------------------
@@ -267,13 +290,10 @@ void drawDisk(double inr, double otr, float r, float g, float b) {
 	gluDeleteQuadric(disk);
 }
 
-void cube2(float hg, float wd, float lg  , float r, float g, float b) {
-	//cube 2
-	//glLoadIdentity();
+void cube(float hg, float wd, float lg  , float r, float g, float b) {
+	
 	glColor3f(r, g, b);
 	
-	
-	//glTranslatef();
 	glBegin(GL_POLYGON);//front
 	glVertex3f(0, hg, 0);	// Top-left
 	glVertex3f(wd,hg , 0);  // Top-right
@@ -334,9 +354,6 @@ void cube2(float hg, float wd, float lg  , float r, float g, float b) {
 void projection() {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-
-	//glTranslatef(ptx, pty, 0);
-	//glRotatef(pry, 0, 1, 0);
 
 	if (isOrtho) {
 		glOrtho(-10.0, 10.0, -10.0, 10.0, ONear, OFar);
