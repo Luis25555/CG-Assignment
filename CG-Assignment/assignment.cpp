@@ -6,6 +6,34 @@
 #pragma comment (lib, "OpenGL32.lib")
 #pragma comment (lib, "GLU32.lib")
 
+/* Read me for camera control
+
+Q rotate camera to left
+E rotate camera to right
+w rotate camera to top
+s rotate camera to bottom
+
+A move camera left
+D move camera right
+SPACE to reset camera
+
+
+*/
+
+/*
+polygon counts
+
+top part
+
+middle part total (24)
+24 quads
+
+botom part
+
+
+*/
+
+
 //variables
 float angle = 0.2;// angle for rotation of whole picture
 float tSpeed = 0.2;//transformation speed
@@ -38,7 +66,7 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 	case WM_KEYDOWN:
 		if (wParam == VK_ESCAPE) PostQuitMessage(0);
 		else if ((wParam == VK_LEFT))  tSpeed = 0.2;
-		else if ((wParam == VK_SPACE)) { tx = 0;tz = 0;ty = 0; }
+		else if ((wParam == VK_SPACE)) { tx = 0;tz = 0;ty = 0; ptrx = 0; ptry = 0; ptx = -2;pty = 0; }
 		else if ((wParam == 'W')) ptrx += prSpeed;
 		else if ((wParam == 'S')) ptrx -= prSpeed;
 		else if ((wParam == 'A')) ptx -= ptSpeed;
