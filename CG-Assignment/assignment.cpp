@@ -17,6 +17,7 @@ A move camera left
 D move camera right
 SPACE to reset camera
 
+press 1 for front view
 
 */
 
@@ -43,7 +44,7 @@ float ONear = -10.0;
 float OFar = 10.0;
 float PNear = 1.0;
 float PFar = 21.0;
-float ptx = -2, pty = 0, ptSpeed = 0.5; // projection translation matrix
+float ptx = 0, pty = 0, ptSpeed = 0.5; // projection translation matrix
 float ptrx = 45, ptry = -45, prSpeed = 1;//prjection rotation angle
 
 /*
@@ -57,6 +58,7 @@ void drawSpehere(float rad, float r, float g, float b);
 void drawCylinder(double br, double tr, double h, float r, float g, float b);
 void drawCylinder2(double br, double tr, double h, float r, float g, float b);
 void drawDisk(double inr, double otr, float r, float g, float b);
+void linecube(float hg, float wd, float lg, float r, float g, float b, float size); //draw line cube
 void cube(float hg, float wd, float lg, float r, float g, float b); //draw rectangular cube
 /*
 hg = height of the cube
@@ -77,6 +79,9 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 		if (wParam == VK_ESCAPE) PostQuitMessage(0);
 		else if ((wParam == VK_LEFT))  tSpeed = 0.2;
 		else if ((wParam == VK_SPACE)) { tx = 0;tz = 0;ty = 0; ptrx = 45; ptry = -45; ptx = 0;pty = 0; }
+		else if ((wParam == '1')) { ptrx = 0; ptry = 0; ptx = 0;pty = 0; }
+		else if ((wParam == '2')) { ptrx = 0; ptry = 180; ptx = 0;pty = 0; }
+		else if ((wParam == '3')) { ptrx = 90; ptry = 0; ptx = 0;pty = 0; }
 		else if ((wParam == 'W')) ptrx += prSpeed;
 		else if ((wParam == 'S')) ptrx -= prSpeed;
 		else if ((wParam == 'A')) ptx -= ptSpeed;
@@ -142,45 +147,67 @@ void display()
 	glPushMatrix(); //all
 	glTranslatef(tx, ty, tz);
 	
-	//body block
-	// btm left cube
-	cube(1,1,2, 0.8, 0.761, 0.737);
+	//middle body block
+	{
+		// btm left cube
+		cube(1, 1, 2, 0.8, 0.761, 0.737);
+		linecube(1, 1, 2, 0, 0, 0, 1);
+		// btm right cube
 
-	// btm right cube
-	glPushMatrix(); //right
-	glTranslatef(1, 0, 0);
-	cube(1,1,2, 0.8, 0.761, 0.737);
-	glPopMatrix();//right
-	
-	//top left cube
+		glPushMatrix(); //right
+		glTranslatef(1, 0, 0);
+		cube(1, 1, 2, 0.8, 0.761, 0.737);
+		linecube(1, 1, 2, 0, 0, 0, 1);
+		glPopMatrix();//right
+
+
+		//top left cube
+		glPushMatrix();
+		glTranslatef(0, 1, 0);
+		cube(1, 1, 2, 0.8, 0.761, 0.737);
+		linecube(1, 1, 2, 0, 0, 0, 1);
+		glPopMatrix();
+
+		//top right cube
+		glPushMatrix();
+		glTranslatef(1, 1, 0);
+		cube(1, 1, 2, 0.8, 0.761, 0.737);
+		linecube(1, 1, 2, 0, 0, 0, 1);
+		glPopMatrix();
+	}
+	//bottom body block
+	{
+		//middle cube
+		glPushMatrix();
+		glTranslatef(0.75, -1.5, 0);
+		linecube(1.5, 0.3, 2, 0, 0, 0, 1);
+		cube(1.5, 0.3, 2, 1, 1, 1);
+		glPopMatrix();
+		//left cube
+		glPushMatrix();
+		glTranslatef(0.45, -1.5, 0);
+		linecube(1.5, 0.3, 2, 0, 0, 0, 1);
+		cube(1.5, 0.3, 2, 1, 1, 1);
+		glPopMatrix();
+		//right cube
+		glPushMatrix();
+		glTranslatef(1.05, -1.5, 0);
+		linecube(1.5, 0.3, 2, 0, 0, 0, 1);
+		cube(1.5, 0.3, 2, 1, 1, 1);
+		glPopMatrix();
+	}
+
+	//leg left
+	//thigh
 	glPushMatrix();
-
-	glTranslatef(0, 1, 0);
-	cube(1,1,2,0.8,0.761, 0.737);
-
+	glTranslatef(-0.7, -1.2, 0.5);
+	glRotatef(-15, 0, 0, 1);
+	linecube(1.5, 0.75, 1, 0, 0, 0, 1);
+	cube(1.5, 0.75, 1, 1, 1, 1);
 	glPopMatrix();
+
+
 	
-	//top right cube
-	glPushMatrix();
-
-	glTranslatef(1, 1, 0);
-	cube(1,1,2, 0.8, 0.761, 0.737);
-
-	glPopMatrix();
-	
-	
-
-
-
-
-
-
-
-
-
-
-
-
 	glPopMatrix();//all
 
 	//--------------------------------
@@ -348,7 +375,63 @@ void cube(float hg, float wd, float lg  , float r, float g, float b) {
 
 }
 
+void linecube(float hg, float wd, float lg, float r, float g, float b , float size) {
 
+	glColor3f(r, g, b);
+	glLineWidth(size);
+	glBegin(GL_LINE_LOOP);//front
+	glVertex3f(0, hg, 0);	// Top-left
+	glVertex3f(wd, hg, 0);  // Top-right
+	glVertex3f(wd, 0, 0);   // Bottom-right
+	glVertex3f(0, 0, 0);	// Bottom-left
+	glEnd();
+
+	glBegin(GL_LINE_LOOP);//btm
+	glVertex3f(0, 0, 0);   // front-left
+	glVertex3f(0, 0, lg);      // back-left
+	glVertex3f(wd, 0, lg);   // Back-right
+	glVertex3f(wd, 0, 0);      // front -right
+	glEnd();
+
+
+	glBegin(GL_LINE_LOOP);//right
+
+	glVertex3f(wd, 0, 0);   // front btm
+	glVertex3f(wd, hg, 0);      //front top
+	glVertex3f(wd, hg, lg);  //back-top
+	glVertex3f(wd, 0, lg);      //back-btm
+	glEnd();
+
+	glBegin(GL_LINE_LOOP);//back
+
+	glVertex3f(wd, 0, lg);  // btm - right
+	glVertex3f(wd, hg, lg); //top-right
+	glVertex3f(0, hg, lg);	//top-left
+	glVertex3f(0, 0, lg);   //btm-left
+	glEnd();
+
+	glBegin(GL_LINE_LOOP);//left
+
+	glVertex3f(0, 0, lg);   // back - btm
+	glVertex3f(0, 0, 0);      //front - btm
+	glVertex3f(0, hg, 0);  //front - top
+	glVertex3f(0, hg, lg);      //top-right
+	glEnd();
+
+
+	glBegin(GL_LINE_LOOP); //top
+
+	glVertex3f(0, hg, lg);   // back - btm
+	glVertex3f(wd, hg, lg);      //front - btm
+	glVertex3f(wd, hg, 0);  //front - top
+	glVertex3f(0, hg, 0);      //top-right
+	glEnd();
+
+
+
+
+
+}
 
 
 void projection() {
