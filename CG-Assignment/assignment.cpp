@@ -41,9 +41,14 @@ botom part
 //variables
 float angle = 0;// angle for rotation of whole picture
 float anglex = 0;
+float angley = 0;
 float tSpeed = 0.001;//transformation speed
 float twSpeed = 1;
-float rSpeed = 1;
+float walkSpeed = 0.002;
+float rSpeed = 0.5;
+float rxSpeed = 0.2;
+float rySpeed = 0.2;
+
 float tx = 0, ty = 0, tz = 0;
 bool isOrtho = true;
 float ONear = -10.0;
@@ -53,6 +58,8 @@ float PFar = 21.0;
 float ptx = 0, pty = 0, ptSpeed = 0.5; // projection translation matrix
 float ptrx = 45, ptry = -45, prSpeed = 1;//prjection rotation angle
 float twx = 0, twy = 0, twz = 0;
+bool walk = false;
+bool chg = false;
 /*
 hg = height of the cube
 wd = width of the cube
@@ -60,12 +67,17 @@ lg = length of the cube
 */
 
 #define WINDOW_TITLE "OpenGL Window"
+
+//function declaration
+
 void drawSpehere(float rad, float r, float g, float b);
 void drawCylinder(double br, double tr, double h, float r, float g, float b);
 void drawCylinder2(double br, double tr, double h, float r, float g, float b);
 void drawDisk(double inr, double otr, float r, float g, float b);
 void linecube(float hg, float wd, float lg, float r, float g, float b, float size); //draw line cube
 void cube(float hg, float wd, float lg, float r, float g, float b); //draw rectangular cube
+
+
 /*
 hg = height of the cube
 wd = width of the cube
@@ -103,6 +115,9 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 		else if ((wParam == 'J')) { angle -= rSpeed;tx -= tSpeed;ty -= tSpeed; }
 		else if ((wParam == 'U')) { anglex += rSpeed; tz -= tSpeed; }
 		else if ((wParam == 'I')) { anglex -= rSpeed; tz += tSpeed; }
+		else if ((wParam == 'Z')) { walk = true; }
+		else if ((wParam == 'X')) { walk = false;  angle = 0;
+		}
 		break;
 
 	default:
@@ -219,6 +234,18 @@ void display()
 		glPushMatrix();//whole leg
 		glTranslatef(0, -1.5, 0.5);
 		glRotatef(angle, 1, 0, 0);
+		if (walk == true) {
+			twz += walkSpeed;
+			if (chg == false) { angle += rSpeed; anglex -= rxSpeed; angley += rySpeed; }
+			else { angle -= rSpeed; anglex += rxSpeed;angley -= rySpeed;}
+
+			if (angle == 45) { chg = true; }
+			if (angle == -45) { chg = false; }
+
+			
+		}
+
+
 		glTranslatef(0, 1.5, -0.5);
 		//glTranslatef(tx, 0, 0);
 		//thigh
@@ -289,6 +316,12 @@ void display()
 		glRotatef(30, 1, 0, 0);
 		cube(2, 0.5, 0.5, 1, 1, 1);
 		linecube(2, 0.5, 0.5, 0, 0, 0, 1);
+
+		glTranslatef(0, -1.5, 1);
+		glRotatef(-angley, 1, 0, 0);
+		glTranslatef(0, 1.5, -1);
+
+
 		//ankle
 		glPushMatrix();
 		glRotatef(-30, 1, 0, 0);
@@ -361,7 +394,7 @@ void display()
 			glPushMatrix(); //btm leg
 			glTranslatef(0, -5.5, 1);
 
-			glRotatef(anglex, 1, 0, 0);
+			glRotatef(-anglex, 1, 0, 0);
 			glTranslatef(0, 5.5, -1);
 
 
@@ -379,12 +412,20 @@ void display()
 			cube(2, 0.5, 0.5, 1, 1, 1);
 			linecube(2, 0.5, 0.5, 0, 0, 0, 1);
 			//ankle
+
+			glTranslatef(0, -1.5, 1);
+			glRotatef(angley, 1, 0, 0);
+			glTranslatef(0, 1.5, -1);
+
 			glPushMatrix();
 			glRotatef(-30, 1, 0, 0);
 			glTranslatef(-0.5, -2.7, -1);
 
 			linecube(1, 1.5, 2.5, 0, 0, 0, 1);
 			cube(1, 1.5, 2.5, 1, 1, 1);
+
+
+
 			glPopMatrix();//ankle
 			glPopMatrix();//knee cap
 			glPopMatrix();//smallleg
@@ -651,3 +692,44 @@ void projection() {
 
 }
 
+void shoes(float lg,float wd,float hg, float r,float g,float b) {
+	glColor3f(r, g, b);
+
+	//front
+	glBegin(GL_QUADS);
+	glVertex3f(0, 0, 0); //btm left
+	glVertex3f(wd, 0, 0); // btm right
+	glVertex3f(wd, hg, 0);// top right
+	glEnd();
+
+	// right plane
+	glBegin(GL_QUADS);
+	glVertex3f(wd, hg, 0); //top right
+	glVertex3f(wd, 0, 0); // btm right
+	glVertex3f(wd, 0, lg);// back btm right
+	glVertex3f(wd, hg, lg);//back top right
+	glEnd();
+
+	//back
+	glBegin(GL_QUADS);
+	glVertex3f(wd, hg, lg); //top right
+	glVertex3f(wd, 0, lg); // btm right
+	glVertex3f(0, 0, lg);// btm left
+	glEnd();
+
+	// left plane
+	glBegin(GL_QUADS);
+	glVertex3f(0, 0, lg); //btm left
+	glVertex3f(wd, hg, lg); // btm right
+	glVertex3f(wd, hg, 0);// back btm right
+	glVertex3f(0, 0, 0);//back top right
+
+	// btm plane
+	glBegin(GL_QUADS);
+	glVertex3f(0, 0, 0); //btm left
+	glVertex3f(0, 0, lg); // btm right
+	glVertex3f(wd, 0, lg);// back btm right
+	glVertex3f(wd, 0, 0);//back top right
+
+	glEnd();
+}
