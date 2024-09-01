@@ -161,6 +161,10 @@ void display()
 	//middle body block
 	{
 		// btm left cube
+		glPushMatrix();
+
+		glTranslatef(-0.1, 0, 0);
+
 		cube(1, 1, 2, 0.8, 0.761, 0.737);
 		linecube(1, 1, 2, 0, 0, 0, 1);
 		// btm right cube
@@ -184,6 +188,8 @@ void display()
 		glTranslatef(1, 1, 0);
 		cube(1, 1, 2, 0.8, 0.761, 0.737);
 		linecube(1, 1, 2, 0, 0, 0, 1);
+		glPopMatrix();
+
 		glPopMatrix();
 	}
 	//bottom body block
@@ -209,92 +215,196 @@ void display()
 	}
 
 	//leg left
-	glPushMatrix();//whole leg
-	
-	glRotatef(angle, 0, 0, 1);
-	//glTranslatef(tx, 0, 0);
-	//thigh
-	glPushMatrix();//thigh
-	glTranslatef(-0.32, -1.5, 0.5);
-	linecube(1.5, 0.75, 1, 0, 0, 0, 1);
-	cube(1.5, 0.75, 1, 1, 1, 1);
-	glPopMatrix();//thigh
+	{
+		glPushMatrix();//whole leg
+		glTranslatef(0, -1.5, 0.5);
+		glRotatef(angle, 1, 0, 0);
+		glTranslatef(0, 1.5, -0.5);
+		//glTranslatef(tx, 0, 0);
+		//thigh
+		glPushMatrix();//thigh
+		glTranslatef(-0.32, -1.5, 0.5);
+		linecube(1.5, 0.75, 1, 0, 0, 0, 1);
+		cube(1.5, 0.75, 1, 1, 1, 1);
+		glPopMatrix();//thigh
 
-	//connector
-	glPushMatrix();//conn
-	glTranslatef(-0.55, -2, 0.41);
+		//connector
+		glPushMatrix();//conn
+		glTranslatef(-0.55, -2, 0.41);
 
-	linecube(0.5, 1.2, 1.2, 0, 0, 0, 1);
-	cube(0.5, 1.2, 1.2, 1, 1, 1);
-	glPopMatrix();//conn
+		linecube(0.5, 1.2, 1.2, 0, 0, 0, 1);
+		cube(0.5, 1.2, 1.2, 1, 1, 1);
+		glPopMatrix();//conn
 
-	glPushMatrix();//bigleg
-	glTranslatef(-0.32, -5, 0.5);
-	linecube(3, 0.75, 1, 0, 0, 0, 1);
-	cube(3, 0.75, 1, 1, 1, 1);
-	glPopMatrix();//bigleg
-
-
-	
-	//knee cylinder inner	
-	glPushMatrix();//knee cyl inner
-	glTranslatef(0.2, -5.5, 1);
-	glRotatef(90, 0, 1, 0);
-	drawCylinder(0.5, 0.5, 0.5, 1, 1, 1);
-	
-	drawDisk(0, 0.5, 1, 1, 0);
-	
-	glTranslatef(0, 0, 0.5);
-	drawDisk(0, 0.5, 1, 0, 0);
-	
-	glPopMatrix();//knee cyl inner
-	//knee cylinder outer
-	glPushMatrix();//knee cyl outer
-	glTranslatef(-0.6, -5.5, 1);
-	glRotatef(90, 0, 1, 0);
-	drawCylinder(0.5, 0.5, 0.5, 1, 1, 1);
-	drawDisk(0, 0.5, 1, 1, 0);
-	//disk inner
-	glTranslatef(0, 0, 0.5);
-	drawDisk(0, 0.5, 1, 0, 0);
-	//disk inner
-	glPopMatrix();//knee cyl outer
-	
-	//btm leg
-	glPushMatrix(); //btm leg
-	glTranslatef(0, -5.5, 1);
-	
-	glRotatef(anglex, 1, 0, 0);
-	glTranslatef(0, 5.5, -1);
-	
-	
-
-	
-	//small leg
-	glPushMatrix();//small leg
-
-	glTranslatef(-0.32, -8, 0.5);
-	linecube(2, 0.75, 1, 0, 0, 0, 1);
-	cube(2, 0.75, 1, 1, 1, 1);
-	glPushMatrix();//knee cap
-	glTranslatef(0.1, 1.7, 0.5);
-	glRotatef(30, 1, 0, 0);
-	cube(2, 0.5, 0.5, 1, 1, 1);
-	linecube(2, 0.5, 0.5, 0, 0, 0, 1);
-	//ankle
-	glPushMatrix();
-	glRotatef(-30, 1, 0, 0);
-	glTranslatef(-0.5, -2.7, -1);
-	
-	linecube(1, 1.5, 2.5, 0, 0, 0, 1);
-	cube(1, 1.5, 2.5, 1, 1, 1);
-	glPopMatrix();//ankle
-	glPopMatrix();//knee cap
-	glPopMatrix();//smallleg
-	glPopMatrix(); //btm leg
-	glPopMatrix();//whole leg
+		glPushMatrix();//bigleg
+		glTranslatef(-0.32, -5, 0.5);
+		linecube(3, 0.75, 1, 0, 0, 0, 1);
+		cube(3, 0.75, 1, 1, 1, 1);
+		glPopMatrix();//bigleg
 
 
+
+		//knee cylinder inner	
+		glPushMatrix();//knee cyl inner
+		glTranslatef(0.2, -5.5, 1);
+		glRotatef(90, 0, 1, 0);
+		drawCylinder(0.5, 0.5, 0.5, 1, 1, 1);
+
+		drawDisk(0, 0.5, 1, 1, 0);
+
+		glTranslatef(0, 0, 0.5);
+		drawDisk(0, 0.5, 1, 0, 0);
+
+		glPopMatrix();//knee cyl inner
+		//knee cylinder outer
+		glPushMatrix();//knee cyl outer
+		glTranslatef(-0.6, -5.5, 1);
+		glRotatef(90, 0, 1, 0);
+		drawCylinder(0.5, 0.5, 0.5, 1, 1, 1);
+		drawDisk(0, 0.5, 1, 1, 0);
+		//disk inner
+		glTranslatef(0, 0, 0.5);
+		drawDisk(0, 0.5, 1, 0, 0);
+		//disk inner
+		glPopMatrix();//knee cyl outer
+
+		//btm leg
+		glPushMatrix(); //btm leg
+		glTranslatef(0, -5.5, 1);
+
+		glRotatef(anglex, 1, 0, 0);
+		glTranslatef(0, 5.5, -1);
+
+
+
+
+		//small leg
+		glPushMatrix();//small leg
+
+		glTranslatef(-0.32, -8, 0.5);
+		linecube(2, 0.75, 1, 0, 0, 0, 1);
+		cube(2, 0.75, 1, 1, 1, 1);
+		glPushMatrix();//knee cap
+		glTranslatef(0.1, 1.7, 0.5);
+		glRotatef(30, 1, 0, 0);
+		cube(2, 0.5, 0.5, 1, 1, 1);
+		linecube(2, 0.5, 0.5, 0, 0, 0, 1);
+		//ankle
+		glPushMatrix();
+		glRotatef(-30, 1, 0, 0);
+		glTranslatef(-0.5, -2.7, -1);
+
+		linecube(1, 1.5, 2.5, 0, 0, 0, 1);
+		cube(1, 1.5, 2.5, 1, 1, 1);
+
+
+
+		glPopMatrix();//ankle
+		glPopMatrix();//knee cap
+
+		//right leg
+		{
+			glPushMatrix();//whole leg
+			glTranslatef(1.65, 0, 0);
+			glTranslatef(0, -1.5, 0.5);
+			glRotatef(-angle, 1, 0, 0);
+			glTranslatef(0, 1.5, -0.5);
+			//glTranslatef(tx, 0, 0);
+			//thigh
+			glPushMatrix();//thigh
+			glTranslatef(-0.32, -1.5, 0.5);
+			linecube(1.5, 0.75, 1, 0, 0, 0, 1);
+			cube(1.5, 0.75, 1, 1, 1, 1);
+			glPopMatrix();//thigh
+
+			//connector
+			glPushMatrix();//conn
+			glTranslatef(-0.55, -2, 0.41);
+
+			linecube(0.5, 1.2, 1.2, 0, 0, 0, 1);
+			cube(0.5, 1.2, 1.2, 1, 1, 1);
+			glPopMatrix();//conn
+
+			glPushMatrix();//bigleg
+			glTranslatef(-0.32, -5, 0.5);
+			linecube(3, 0.75, 1, 0, 0, 0, 1);
+			cube(3, 0.75, 1, 1, 1, 1);
+			glPopMatrix();//bigleg
+
+
+
+			//knee cylinder inner	
+			glPushMatrix();//knee cyl inner
+			glTranslatef(0.2, -5.5, 1);
+			glRotatef(90, 0, 1, 0);
+			drawCylinder(0.5, 0.5, 0.5, 1, 1, 1);
+
+			drawDisk(0, 0.5, 1, 1, 0);
+
+			glTranslatef(0, 0, 0.5);
+			drawDisk(0, 0.5, 1, 0, 0);
+
+			glPopMatrix();//knee cyl inner
+			//knee cylinder outer
+			glPushMatrix();//knee cyl outer
+			glTranslatef(-0.6, -5.5, 1);
+			glRotatef(90, 0, 1, 0);
+			drawCylinder(0.5, 0.5, 0.5, 1, 1, 1);
+			drawDisk(0, 0.5, 1, 1, 0);
+			//disk inner
+			glTranslatef(0, 0, 0.5);
+			drawDisk(0, 0.5, 1, 0, 0);
+			//disk inner
+			glPopMatrix();//knee cyl outer
+
+			//btm leg
+			glPushMatrix(); //btm leg
+			glTranslatef(0, -5.5, 1);
+
+			glRotatef(anglex, 1, 0, 0);
+			glTranslatef(0, 5.5, -1);
+
+
+
+
+			//small leg
+			glPushMatrix();//small leg
+
+			glTranslatef(-0.32, -8, 0.5);
+			linecube(2, 0.75, 1, 0, 0, 0, 1);
+			cube(2, 0.75, 1, 1, 1, 1);
+			glPushMatrix();//knee cap
+			glTranslatef(0.1, 1.7, 0.5);
+			glRotatef(30, 1, 0, 0);
+			cube(2, 0.5, 0.5, 1, 1, 1);
+			linecube(2, 0.5, 0.5, 0, 0, 0, 1);
+			//ankle
+			glPushMatrix();
+			glRotatef(-30, 1, 0, 0);
+			glTranslatef(-0.5, -2.7, -1);
+
+			linecube(1, 1.5, 2.5, 0, 0, 0, 1);
+			cube(1, 1.5, 2.5, 1, 1, 1);
+			glPopMatrix();//ankle
+			glPopMatrix();//knee cap
+			glPopMatrix();//smallleg
+			glPopMatrix(); //btm leg
+			glPopMatrix();//whole leg
+		}
+
+		glPopMatrix();//smallleg
+
+
+
+		glPopMatrix(); //btm leg
+
+		
+
+		glPopMatrix();//whole leg
+	}
+
+	
+	
 
 
 	glPopMatrix(); // all
