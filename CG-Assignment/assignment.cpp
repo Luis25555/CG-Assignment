@@ -18,7 +18,10 @@ D move camera right
 SPACE to reset camera
 
 press 1 for front view
-
+press 2 for back view
+press 3 for top view
+press 4 for left side view
+press 5 for right side view
 */
 
 /*
@@ -36,8 +39,10 @@ botom part
 
 
 //variables
-float angle = 0.2;// angle for rotation of whole picture
-float tSpeed = 0.2;//transformation speed
+float angle = 0;// angle for rotation of whole picture
+float tSpeed = 0.001;//transformation speed
+float twSpeed = 1;
+float rSpeed = 1;
 float tx = 0, ty = 0, tz = 0;
 bool isOrtho = true;
 float ONear = -10.0;
@@ -46,7 +51,7 @@ float PNear = 1.0;
 float PFar = 21.0;
 float ptx = 0, pty = 0, ptSpeed = 0.5; // projection translation matrix
 float ptrx = 45, ptry = -45, prSpeed = 1;//prjection rotation angle
-
+float twx = 0, twy = 0, twz = 0;
 /*
 hg = height of the cube
 wd = width of the cube
@@ -77,11 +82,14 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 
 	case WM_KEYDOWN:
 		if (wParam == VK_ESCAPE) PostQuitMessage(0);
-		else if ((wParam == VK_LEFT))  tSpeed = 0.2;
-		else if ((wParam == VK_SPACE)) { tx = 0;tz = 0;ty = 0; ptrx = 45; ptry = -45; ptx = 0;pty = 0; }
+		else if ((wParam == VK_LEFT)) { twx -= twSpeed; }
+		else if ((wParam == VK_RIGHT)) { twx += twSpeed; }
+		else if ((wParam == VK_SPACE)) { tx = 0;tz = 0;ty = 0; ptrx = 45; ptry = -45; ptx = 0;pty = 0; angle = 0; }
 		else if ((wParam == '1')) { ptrx = 0; ptry = 0; ptx = 0;pty = 0; }
 		else if ((wParam == '2')) { ptrx = 0; ptry = 180; ptx = 0;pty = 0; }
 		else if ((wParam == '3')) { ptrx = 90; ptry = 0; ptx = 0;pty = 0; }
+		else if ((wParam == '4')) { ptrx = 0; ptry = 90; ptx = 0;pty = 0; }
+		else if ((wParam == '5')) { ptrx = 0; ptry = -90; ptx = 0;pty = 0; }
 		else if ((wParam == 'W')) ptrx += prSpeed;
 		else if ((wParam == 'S')) ptrx -= prSpeed;
 		else if ((wParam == 'A')) ptx -= ptSpeed;
@@ -90,7 +98,8 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 		else if ((wParam == 'E')) ptry += prSpeed;
 		else if ((wParam == VK_UP))  tz += tSpeed;
 		else if ((wParam == VK_DOWN))  tz -= tSpeed;
-
+		else if ((wParam == 'K')) { angle += rSpeed;tx += tSpeed;ty += tSpeed; }
+		else if ((wParam == 'J')) { angle -= rSpeed;tx -= tSpeed;ty -= tSpeed; }
 
 		break;
 
@@ -145,7 +154,7 @@ void display()
 	//glLoadIdentity();
 	projection();
 	glPushMatrix(); //all
-	glTranslatef(tx, ty, tz);
+	glTranslatef(twx, twy, twz);
 	
 	//middle body block
 	{
@@ -198,17 +207,81 @@ void display()
 	}
 
 	//leg left
+	glPushMatrix();//whole leg
+	glRotatef(angle, 0, 0, 1);
+	//glTranslatef(tx, 0, 0);
 	//thigh
-	glPushMatrix();
-	glTranslatef(-0.7, -1.2, 0.5);
-	glRotatef(-15, 0, 0, 1);
+	glPushMatrix();//thigh
+	glTranslatef(-0.32, -1.5, 0.5);
 	linecube(1.5, 0.75, 1, 0, 0, 0, 1);
 	cube(1.5, 0.75, 1, 1, 1, 1);
-	glPopMatrix();
+	glPopMatrix();//thigh
+
+	//connector
+	glPushMatrix();//conn
+	glTranslatef(-0.55, -2, 0.41);
+
+	linecube(0.5, 1.2, 1.2, 0, 0, 0, 1);
+	cube(0.5, 1.2, 1.2, 1, 1, 1);
+	glPopMatrix();//conn
+
+	glPushMatrix();//bigleg
+	glTranslatef(-0.32, -5, 0.5);
+	linecube(3, 0.75, 1, 0, 0, 0, 1);
+	cube(3, 0.75, 1, 1, 1, 1);
+	glPopMatrix();//bigleg
 
 
 	
-	glPopMatrix();//all
+	//knee cylinder inner	
+	glPushMatrix();//knee cyl inner
+	glTranslatef(0.2, -5.5, 1);
+	glRotatef(90, 0, 1, 0);
+	drawCylinder(0.5, 0.5, 0.5, 1, 1, 1);
+	
+	drawDisk(0, 0.5, 1, 1, 0);
+	
+	glTranslatef(0, 0, 0.5);
+	drawDisk(0, 0.5, 1, 0, 0);
+	
+	glPopMatrix();//knee cyl inner
+	//knee cylinder outer
+	glPushMatrix();//knee cyl outer
+	glTranslatef(-0.6, -5.5, 1);
+	glRotatef(90, 0, 1, 0);
+	drawCylinder(0.5, 0.5, 0.5, 1, 1, 1);
+	drawDisk(0, 0.5, 1, 1, 0);
+	//disk inner
+	glTranslatef(0, 0, 0.5);
+	drawDisk(0, 0.5, 1, 0, 0);
+	//disk inner
+	glPopMatrix();//knee cyl outer
+	
+	//knee cap
+	glPushMatrix();
+	glTranslatef(-0.2, -6, 0.9);
+	glRotatef(30, 1, 0, 0);
+	cube(2, 0.5, 0.5, 1, 1, 1);
+	linecube(2, 0.5, 0.5, 0, 0, 0, 1);
+	glPopMatrix();
+
+	//small leg
+	glPushMatrix();//bigleg
+	glTranslatef(-0.32, -8, 0.5);
+	linecube(2, 0.75, 1, 0, 0, 0, 1);
+	cube(2, 0.75, 1, 1, 1, 1);
+	glPopMatrix();//smallleg
+
+	//ankle
+
+
+	
+	glPopMatrix();//whole leg
+
+
+
+
+	glPopMatrix(); // all
 
 	//--------------------------------
 	//	End of OpenGL drawing
@@ -451,3 +524,4 @@ void projection() {
 	glRotatef(ptry, 0, 1, 0);
 
 }
+
