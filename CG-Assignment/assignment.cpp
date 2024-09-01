@@ -32,7 +32,12 @@ top part
 middle part total (24)
 24 quads
 
-botom part
+botom part (100)
+18 QUADS mid
+
+legs
+78 QUADS  
+4 Triangles
 
 
 */
