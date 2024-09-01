@@ -45,9 +45,9 @@ float angley = 0;
 float tSpeed = 0.001;//transformation speed
 float twSpeed = 1;
 float walkSpeed = 0.002;
-float rSpeed = 0.5;
-float rxSpeed = 0.2;
-float rySpeed = 0.2;
+float rSpeed = 0.6;
+float rxSpeed = 0.7;
+float rySpeed = 0.6;
 
 float tx = 0, ty = 0, tz = 0;
 bool isOrtho = true;
@@ -76,7 +76,7 @@ void drawCylinder2(double br, double tr, double h, float r, float g, float b);
 void drawDisk(double inr, double otr, float r, float g, float b);
 void linecube(float hg, float wd, float lg, float r, float g, float b, float size); //draw line cube
 void cube(float hg, float wd, float lg, float r, float g, float b); //draw rectangular cube
-
+void shoes(float lg, float wd, float hg, float r, float g, float b);
 
 /*
 hg = height of the cube
@@ -239,8 +239,8 @@ void display()
 			if (chg == false) { angle += rSpeed; anglex -= rxSpeed; angley += rySpeed; }
 			else { angle -= rSpeed; anglex += rxSpeed;angley -= rySpeed;}
 
-			if (angle == 45) { chg = true; }
-			if (angle == -45) { chg = false; }
+			if (angley >= 30 ){ chg = true; }
+			if (angley <= -30) { chg = false; }
 
 			
 		}
@@ -318,7 +318,7 @@ void display()
 		linecube(2, 0.5, 0.5, 0, 0, 0, 1);
 
 		glTranslatef(0, -1.5, 1);
-		glRotatef(-angley, 1, 0, 0);
+		glRotatef(angley, 1, 0, 0);
 		glTranslatef(0, 1.5, -1);
 
 
@@ -329,7 +329,9 @@ void display()
 
 		linecube(1, 1.5, 2.5, 0, 0, 0, 1);
 		cube(1, 1.5, 2.5, 1, 1, 1);
-
+		glTranslatef(0, 0, 3.5);
+		glRotatef(90, 0, 1, 0);
+		shoes(1.5, 1, 1, 1, 1, 0);
 
 
 		glPopMatrix();//ankle
@@ -423,8 +425,9 @@ void display()
 
 			linecube(1, 1.5, 2.5, 0, 0, 0, 1);
 			cube(1, 1.5, 2.5, 1, 1, 1);
-
-
+			glTranslatef(0, 0, 3.5);
+			glRotatef(90, 0, 1, 0);
+			shoes(1.5, 1, 1, 1, 1, 0);
 
 			glPopMatrix();//ankle
 			glPopMatrix();//knee cap
@@ -449,6 +452,9 @@ void display()
 
 
 	glPopMatrix(); // all
+
+
+
 
 	//--------------------------------
 	//	End of OpenGL drawing
@@ -693,10 +699,50 @@ void projection() {
 }
 
 void shoes(float lg,float wd,float hg, float r,float g,float b) {
+	glColor3f(0, 0, 0);
+
+	//front
+	glBegin(GL_LINE_LOOP);
+	glVertex3f(0, 0, 0); //btm left
+	glVertex3f(wd, 0, 0); // btm right
+	glVertex3f(wd, hg, 0);// top right
+	glEnd();
+
+	// right plane
+	glBegin(GL_LINE_LOOP);
+	glVertex3f(wd, hg, 0); //top right
+	glVertex3f(wd, 0, 0); // btm right
+	glVertex3f(wd, 0, lg);// back btm right
+	glVertex3f(wd, hg, lg);//back top right
+	glEnd();
+
+	//back
+	glBegin(GL_LINE_LOOP);
+	glVertex3f(wd, hg, lg); //top right
+	glVertex3f(wd, 0, lg); // btm right
+	glVertex3f(0, 0, lg);// btm left
+	glEnd();
+
+	// left plane
+	glBegin(GL_LINE_LOOP);
+	glVertex3f(0, 0, lg); //btm left
+	glVertex3f(wd, hg, lg); // btm right
+	glVertex3f(wd, hg, 0);// back btm right
+	glVertex3f(0, 0, 0);//back top right
+	glEnd();
+	// btm plane
+	glBegin(GL_LINE_LOOP);
+	glVertex3f(0, 0, 0); //btm left
+	glVertex3f(0, 0, lg); // btm right
+	glVertex3f(wd, 0, lg);// back btm right
+	glVertex3f(wd, 0, 0);//back top right
+
+	glEnd();
+
 	glColor3f(r, g, b);
 
 	//front
-	glBegin(GL_QUADS);
+	glBegin(GL_TRIANGLES);
 	glVertex3f(0, 0, 0); //btm left
 	glVertex3f(wd, 0, 0); // btm right
 	glVertex3f(wd, hg, 0);// top right
@@ -710,20 +756,14 @@ void shoes(float lg,float wd,float hg, float r,float g,float b) {
 	glVertex3f(wd, hg, lg);//back top right
 	glEnd();
 
-	//back
-	glBegin(GL_QUADS);
-	glVertex3f(wd, hg, lg); //top right
-	glVertex3f(wd, 0, lg); // btm right
-	glVertex3f(0, 0, lg);// btm left
-	glEnd();
-
+	
 	// left plane
 	glBegin(GL_QUADS);
 	glVertex3f(0, 0, lg); //btm left
 	glVertex3f(wd, hg, lg); // btm right
 	glVertex3f(wd, hg, 0);// back btm right
 	glVertex3f(0, 0, 0);//back top right
-
+	glEnd();
 	// btm plane
 	glBegin(GL_QUADS);
 	glVertex3f(0, 0, 0); //btm left
@@ -732,4 +772,12 @@ void shoes(float lg,float wd,float hg, float r,float g,float b) {
 	glVertex3f(wd, 0, 0);//back top right
 
 	glEnd();
+
+	//back
+	glBegin(GL_TRIANGLES);
+	glVertex3f(wd, hg, lg); //top right
+	glVertex3f(wd, 0, lg); // btm right
+	glVertex3f(0, 0, lg);// btm left
+	glEnd();
+
 }
