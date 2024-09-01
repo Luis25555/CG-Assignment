@@ -40,6 +40,7 @@ botom part
 
 //variables
 float angle = 0;// angle for rotation of whole picture
+float anglex = 0;
 float tSpeed = 0.001;//transformation speed
 float twSpeed = 1;
 float rSpeed = 1;
@@ -100,7 +101,8 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 		else if ((wParam == VK_DOWN))  tz -= tSpeed;
 		else if ((wParam == 'K')) { angle += rSpeed;tx += tSpeed;ty += tSpeed; }
 		else if ((wParam == 'J')) { angle -= rSpeed;tx -= tSpeed;ty -= tSpeed; }
-
+		else if ((wParam == 'U')) { anglex += rSpeed; tz -= tSpeed; }
+		else if ((wParam == 'I')) { anglex -= rSpeed; tz += tSpeed; }
 		break;
 
 	default:
@@ -208,6 +210,7 @@ void display()
 
 	//leg left
 	glPushMatrix();//whole leg
+	
 	glRotatef(angle, 0, 0, 1);
 	//glTranslatef(tx, 0, 0);
 	//thigh
@@ -257,25 +260,38 @@ void display()
 	//disk inner
 	glPopMatrix();//knee cyl outer
 	
-	//knee cap
-	glPushMatrix();
-	glTranslatef(-0.2, -6, 0.9);
-	glRotatef(30, 1, 0, 0);
-	cube(2, 0.5, 0.5, 1, 1, 1);
-	linecube(2, 0.5, 0.5, 0, 0, 0, 1);
-	glPopMatrix();
+	//btm leg
+	glPushMatrix(); //btm leg
+	glTranslatef(0, -5.5, 1);
+	
+	glRotatef(anglex, 1, 0, 0);
+	glTranslatef(0, 5.5, -1);
+	
+	
 
+	
 	//small leg
-	glPushMatrix();//bigleg
+	glPushMatrix();//small leg
+
 	glTranslatef(-0.32, -8, 0.5);
 	linecube(2, 0.75, 1, 0, 0, 0, 1);
 	cube(2, 0.75, 1, 1, 1, 1);
-	glPopMatrix();//smallleg
-
+	glPushMatrix();//knee cap
+	glTranslatef(0.1, 1.7, 0.5);
+	glRotatef(30, 1, 0, 0);
+	cube(2, 0.5, 0.5, 1, 1, 1);
+	linecube(2, 0.5, 0.5, 0, 0, 0, 1);
 	//ankle
-
-
+	glPushMatrix();
+	glRotatef(-30, 1, 0, 0);
+	glTranslatef(-0.5, -2.7, -1);
 	
+	linecube(1, 1.5, 2.5, 0, 0, 0, 1);
+	cube(1, 1.5, 2.5, 1, 1, 1);
+	glPopMatrix();//ankle
+	glPopMatrix();//knee cap
+	glPopMatrix();//smallleg
+	glPopMatrix(); //btm leg
 	glPopMatrix();//whole leg
 
 
