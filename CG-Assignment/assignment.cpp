@@ -82,7 +82,11 @@ void drawDisk(double inr, double otr, float r, float g, float b);
 void linecube(float hg, float wd, float lg, float r, float g, float b, float size); //draw line cube
 void cube(float hg, float wd, float lg, float r, float g, float b); //draw rectangular cube
 void shoes(float lg, float wd, float hg, float r, float g, float b);
-
+void body(float wd, float lg, float hg, float r, float g, float b);
+void bodybtm(float wd, float lg, float hg, float r, float g, float b);
+void head();
+void neck();
+void arm();
 /*
 hg = height of the cube
 wd = width of the cube
@@ -178,6 +182,36 @@ void display()
 	glPushMatrix(); //all
 	glTranslatef(twx, twy, twz);
 	
+	
+	glPushMatrix();
+	glTranslatef(-3, 4, -0.5);
+	arm();
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(3, 4, -0.5);
+	arm();
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(0.5, 7, 0);
+	head();
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(-2, 2, -2);
+	glRotatef(-90, 0, 1, 0);
+	glTranslatef(1, 0, -5);
+	glPushMatrix();
+	glTranslatef(0, 1, 0);
+	body(4, 4, 4, 1, 1, 1);
+	glPopMatrix();
+	bodybtm(4, 4, 1, 1, 1, 0);
+	glPopMatrix();
+	 
+	
+
+
 	//middle body block
 	{
 		// btm left cube
@@ -212,6 +246,7 @@ void display()
 
 		glPopMatrix();
 	}
+
 	//bottom body block
 	{
 		//middle cube
@@ -784,5 +819,142 @@ void shoes(float lg,float wd,float hg, float r,float g,float b) {
 	glVertex3f(wd, 0, lg); // btm right
 	glVertex3f(0, 0, lg);// btm left
 	glEnd();
+
+}
+void bodybtm(float wd,float lg,float hg,float r, float g, float b) {
+	glColor3f(r, g, b);
+	//top
+	glBegin(GL_QUADS);
+	glVertex3f(0, hg, 0);
+	glVertex3f(wd, hg, 0);
+	glVertex3f(wd, hg, lg);
+	glVertex3f(0, hg, lg);
+	glEnd();
+
+	
+	glBegin(GL_QUADS);
+	glVertex3f(0, hg, lg);
+	glVertex3f((wd*0.25), 0, lg);
+	glVertex3f((wd * 0.25), 0, 0);
+	glVertex3f(0, hg, 0);
+	glEnd();
+
+	
+	glBegin(GL_POLYGON);
+	glVertex3f(0, hg, 0);
+	glVertex3f(wd*0.25, 0, 0);
+	glVertex3f((wd * 0.75), 0, 0);
+	glVertex3f(wd, hg, 0);
+	glEnd();
+
+
+	glBegin(GL_QUADS);
+	glVertex3f(wd, hg, 0);
+	glVertex3f((wd * 0.75), 0, 0);
+	glVertex3f((wd * 0.75), 0, lg);
+	glVertex3f(wd, hg, lg);
+	glEnd();
+
+	
+	glBegin(GL_POLYGON);
+	glVertex3f(wd, hg, lg);
+	glVertex3f(0 , hg, lg);
+	glVertex3f((wd * 0.25), 0, lg);
+	glVertex3f((wd * 0.75), 0, lg);
+	glEnd();
+
+	
+	glBegin(GL_QUADS);
+	glVertex3f((wd*0.25), 0, 0);
+	glVertex3f((wd*0.75), 0, 0);
+	glVertex3f((wd * 0.75), 0, lg);
+	glVertex3f((wd * 0.25), 0, lg);
+	glEnd();
+
+}
+
+void body(float wd, float lg, float hg, float r, float g, float b) {
+	glColor3f(r, g, b);
+	//top
+	glBegin(GL_QUADS);
+	glVertex3f(0, 0, 0);
+	glVertex3f(wd, 0, 0);
+	glVertex3f(wd, 0, lg);
+	glVertex3f(0, 0, lg);
+	glEnd();
+
+
+	glBegin(GL_QUADS);
+	glVertex3f(0, 0, lg);
+	glVertex3f(0, 0, 0);
+	glVertex3f(0, hg, 0);
+	glVertex3f(0, hg, lg);
+	glEnd();
+
+
+	glBegin(GL_POLYGON);
+	glVertex3f(0, hg, lg);
+	glVertex3f(0, 0, lg);
+	glVertex3f(wd, 0, lg);
+	glVertex3f((wd*0.85), hg, lg);
+	glEnd();
+
+
+	glBegin(GL_QUADS);
+	glVertex3f((wd * 0.85), hg, lg);
+	glVertex3f(wd, 0, lg);
+	glVertex3f(wd, 0, 0);
+	glVertex3f((wd * 0.85), hg, 0);
+	glEnd();
+
+
+	glBegin(GL_POLYGON);
+	glVertex3f((wd * 0.85), hg, 0);
+	glVertex3f(wd, 0, 0);
+	glVertex3f(0, 0, 0);
+	glVertex3f(0, hg, 0);
+	glEnd();
+
+
+	glBegin(GL_QUADS);
+	glVertex3f(0,hg,0);
+	glVertex3f(0, hg, lg);
+	glVertex3f((wd*0.85), hg, lg);
+	glVertex3f((wd * 0.85), hg, 0);
+	glEnd();
+
+}
+
+void neck() {
+
+	cube(0.5,1.5,1.5,1,1,1);
+
+}
+
+void head() {
+
+	cube(2,1,1,0,1,1);
+	glPushMatrix();
+	glRotatef(90, 0, 1, 0);
+	glTranslatef(-0.5, 1, -0.5);
+	drawCylinder2(0.45, 0.45, 2, 1, 1, 1);
+	glPopMatrix();
+
+}
+
+void arm() {
+
+	cube(2, 2, 2, 0, 0, 1);
+
+
+	glTranslatef(0.5, -3, 0.5);
+	cube(3, 1, 1, 1, 1, 1); // Cube 1
+	glTranslatef(0, -2.5, 0);
+	glPushMatrix();
+	glTranslatef(0.5, 3, 0.5); 
+	glRotatef(-45, 1, 0, 0);    
+	glTranslatef(-0.5,-3, -0.5); 
+	cube(3, 1, 1, 1, 1, 1); 
+	glPopMatrix();
 
 }
