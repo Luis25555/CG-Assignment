@@ -58,8 +58,8 @@ float tx = 0, ty = 0, tz = 0;
 bool isOrtho = true;
 float ONear = -10.0;
 float OFar = 10.0;
-float PNear = 1.0;
-float PFar = 21.0;
+float PNear = 10.0;
+float PFar = 100.0;
 float ptx = 0, pty = 0, ptSpeed = 0.5; // projection translation matrix
 float ptrx = 45, ptry = -45, prSpeed = 1;//prjection rotation angle
 float twx = 0, twy = 0, twz = 0;
@@ -86,7 +86,7 @@ void body(float wd, float lg, float hg, float r, float g, float b);
 void bodybtm(float wd, float lg, float hg, float r, float g, float b);
 void head();
 void neck();
-void arm();
+void arm(float lr);
 /*
 hg = height of the cube
 wd = width of the cube
@@ -112,21 +112,23 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 		else if ((wParam == '3')) { ptrx = 90; ptry = 0; ptx = 0;pty = 0; }
 		else if ((wParam == '4')) { ptrx = 0; ptry = 90; ptx = 0;pty = 0; }
 		else if ((wParam == '5')) { ptrx = 0; ptry = -90; ptx = 0;pty = 0; }
-		else if ((wParam == 'W')) ptrx += prSpeed;
-		else if ((wParam == 'S')) ptrx -= prSpeed;
+		else if ((wParam == 'W')) pty += ptSpeed;
+		else if ((wParam == 'S')) pty -= ptSpeed;
 		else if ((wParam == 'A')) ptx -= ptSpeed;
 		else if ((wParam == 'D')) ptx += ptSpeed;
 		else if ((wParam == 'Q')) ptry -= prSpeed;
 		else if ((wParam == 'E')) ptry += prSpeed;
-		else if ((wParam == VK_UP))  tz += tSpeed;
-		else if ((wParam == VK_DOWN))  tz -= tSpeed;
+		else if ((wParam == VK_UP))  twz += (tSpeed*100);
+		else if ((wParam == VK_DOWN))  twz -= (tSpeed * 100);
 		else if ((wParam == 'K')) { angle += rSpeed;tx += tSpeed;ty += tSpeed; }
 		else if ((wParam == 'J')) { angle -= rSpeed;tx -= tSpeed;ty -= tSpeed; }
 		else if ((wParam == 'U')) { anglex += rSpeed; tz -= tSpeed; }
 		else if ((wParam == 'I')) { anglex -= rSpeed; tz += tSpeed; }
 		else if ((wParam == 'Z')) { walk = true; }
-		else if ((wParam == 'X')) { walk = false;  angle = 0;
-		}
+		else if ((wParam == 'X')) { walk = false;  angle = 0; }
+		else if ((wParam == 'O')) { isOrtho = true; }
+		else if ((wParam == 'P')) { isOrtho = false; ptrx = 0; ptry = 0; ptx = 0;pty = 0;}
+		
 		break;
 
 	default:
@@ -184,13 +186,14 @@ void display()
 	
 	
 	glPushMatrix();
+
 	glTranslatef(-3, 4, -0.5);
-	arm();
+	arm(-1);
 	glPopMatrix();
 
 	glPushMatrix();
 	glTranslatef(3, 4, -0.5);
-	arm();
+	arm(1);
 	glPopMatrix();
 
 	glPushMatrix();
@@ -728,12 +731,12 @@ void projection() {
 		glOrtho(-10.0, 10.0, -10.0, 10.0, ONear, OFar);
 	}
 	else {
-		gluPerspective(20, 1, -1, 1);
-		glFrustum(-10.0, 10.0, -10.0, 10.0, PNear, PFar);
+		gluPerspective(60.0, 1.0, 0.1, 100.0);
+		glFrustum(-20.0, 20.0, -20.0, 20.0, PNear, PFar);
 	}
 
 	glTranslatef(ptx, pty, 0);
-	glRotatef(ptrx, 1, 0, 0);
+	//glRotatef(ptrx, 1, 0, 0);
 	glRotatef(ptry, 0, 1, 0);
 
 }
@@ -942,8 +945,17 @@ void head() {
 
 }
 
-void arm() {
+void arm(float lr) {
+	glRotatef((angle*lr), 1, 0, 0);
+	if (walk == true) {
+		twz += walkSpeed;
+		if (chg == false) { angle += rSpeed; anglex -= rxSpeed; angley += rySpeed; }
+		else { angle -= rSpeed; anglex += rxSpeed;angley -= rySpeed; }
 
+		if (angley >= 30) { chg = true; }
+		if (angley <= -30) { chg = false; }
+
+	}
 	cube(2, 2, 2, 0, 0, 1);
 
 
