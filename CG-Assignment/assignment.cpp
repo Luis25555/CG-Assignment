@@ -87,6 +87,8 @@ void bodybtm(float wd, float lg, float hg, float r, float g, float b);
 void head();
 void neck();
 void arm(float lr);
+void weapon();
+void sheild();
 /*
 hg = height of the cube
 wd = width of the cube
@@ -177,11 +179,28 @@ void display()
 	//	OpenGL drawing
 	//--------------------------------
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	//glDisable(GL_DEPTH_TEST); // Background should be drawn without depth test
+
+	//glBegin(GL_QUADS);
+	//glColor3f(0.2f, 0.5f, 0.7f); // Top color (light blue)
+	//glVertex3f(-20, 20, -5);
+	//glVertex3f(20, 20, -5);
+
+	//glColor3f(0.0f, 0.0f, 0.2f); // Bottom color (dark blue)
+	//glVertex3f(20, -20, -5);
+	//glVertex3f(-20, -20, -5);
+	//glEnd();
+
+	
+
 	glEnable(GL_DEPTH_TEST); //enable the depth test
 	glMatrixMode(GL_MODELVIEW_MATRIX);
 	//glLoadIdentity();
 	projection();
 	glPushMatrix(); //all
+	
+
 	glTranslatef(twx, twy, twz);
 	
 	
@@ -967,6 +986,25 @@ void arm(float lr) {
 	glRotatef(-45, 1, 0, 0);    
 	glTranslatef(-0.5,-3, -0.5); 
 	cube(3, 1, 1, 1, 1, 1); 
+	if (lr == 1) { weapon(); }
+	else { sheild(); }
 	glPopMatrix();
+
+}
+
+void weapon() {
+	glTranslatef(-0.1, -1.2, -0.1);
+	
+	glTranslatef(0, 0.5, 0);
+	cube(1.2, 1.2, 1.2, 0.443, 0.475, 0.494);
+	
+	glTranslatef(0.35, -5, 0.5);
+	cube(5, 0.5, 0.5, 0.443, 0.475, 0.494);
+}
+
+void sheild() {
+	glRotatef(90, 1, 0, 0);
+	glTranslatef(-2, -4, 0);
+	cube(6, 4, 0.5, 1, 1, 1);
 
 }
