@@ -22,21 +22,35 @@ press 2 for back view
 press 3 for top view
 press 4 for left side view
 press 5 for right side view
+
+B raise arms
+V lower arms
+
+M raise ankle
+N lower ankle
+
+F2 fire gun
+
+
 */
 
 /*
 polygon counts
 
-weapon 12
-sheild 6
+weapon 12 quads
+sheild 6 quads
 
 
 top part (55)
 head 7
 arm 18 x 2 = 36
-
+jetpack 
+2 polygons
+8 quads
+2 cylinder
 body 
-12
+8 quads
+4 polygons
 
 
 middle part total (24)
@@ -46,9 +60,12 @@ botom part (100)
 18 QUADS mid
 
 legs
-78 QUADS  
+74 QUADS  
 4 Triangles
+4 cylinders
 
+
+bullet (1 sphere)
 
 */
 
@@ -1033,7 +1050,7 @@ void arm(float lr) {
 	glRotatef(armangle, 1, 0, 0);    
 	glTranslatef(-0.5,-3, -0.5); 
 	cube(3, 1, 1, 1, 1, 1); 
-	if (lr == 1) { weapon(); bullet(); }
+	if (lr == 1) { weapon(); if(fire == true)bullet(); }
 	else { sheild(); }
 	glPopMatrix();
 
@@ -1055,8 +1072,9 @@ void weapon() {
 void sheild() {
 	glRotatef(90, 1, 0, 0);
 	glTranslatef(-2, -4, 0);
+
 	cube(6, 4, 0.5, 1, 1, 1);
-	cube(6, 4, 0.5, 1, 1, 1);
+	
 }
 
 void jetPack(float wd, float lg, float hg) {
