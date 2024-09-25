@@ -27,7 +27,17 @@ press 5 for right side view
 /*
 polygon counts
 
-top part
+weapon 12
+sheild 6
+
+
+top part (55)
+head 7
+arm 18 x 2 = 36
+
+body 
+12
+
 
 middle part total (24)
 24 quads
@@ -53,7 +63,7 @@ float walkSpeed = 0.002;
 float rSpeed = 0.6;
 float rxSpeed = 0.7;
 float rySpeed = 0.6;
-
+float armangle = -45;
 float tx = 0, ty = 0, tz = 0;
 bool isOrtho = true;
 float ONear = -10.0;
@@ -65,6 +75,9 @@ float ptrx = 45, ptry = -45, prSpeed = 1;//prjection rotation angle
 float twx = 0, twy = 0, twz = 0;
 bool walk = false;
 bool chg = false;
+float anglehand = 0;
+float bulletT = 0;
+void bullet();
 /*
 hg = height of the cube
 wd = width of the cube
@@ -89,6 +102,11 @@ void neck();
 void arm(float lr);
 void weapon();
 void sheild();
+void jetPack(float wd, float lg, float hg);
+void booster();
+float raiseweapon = 0;
+bool rWeapon = false;
+bool fire = false;
 /*
 hg = height of the cube
 wd = width of the cube
@@ -130,7 +148,12 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 		else if ((wParam == 'X')) { walk = false;  angle = 0; }
 		else if ((wParam == 'O')) { isOrtho = true; }
 		else if ((wParam == 'P')) { isOrtho = false; ptrx = 0; ptry = 0; ptx = 0;pty = 0;}
-		
+		else if ((wParam == 'N')) { armangle += rSpeed; }
+		else if ((wParam == 'M')) { armangle -= rSpeed; }
+		else if ((wParam == 'V')) { anglehand += rSpeed; }
+		else if ((wParam == 'B')) { anglehand -= rSpeed; }
+		else if ((wParam == VK_F1)) { rWeapon = true; }
+		else if ((wParam == VK_F2)) { fire = true; }
 		break;
 
 	default:
@@ -207,11 +230,20 @@ void display()
 	glPushMatrix();
 
 	glTranslatef(-3, 4, -0.5);
+	
+	
 	arm(-1);
 	glPopMatrix();
 
 	glPushMatrix();
 	glTranslatef(3, 4, -0.5);
+	if (rWeapon == true) {
+		if (raiseweapon >= -45) {
+			raiseweapon -= rSpeed;
+			glRotatef((raiseweapon), 1, 0, 0);
+		}
+	}
+	
 	arm(1);
 	glPopMatrix();
 
@@ -227,12 +259,21 @@ void display()
 	glPushMatrix();
 	glTranslatef(0, 1, 0);
 	body(4, 4, 4, 1, 1, 1);
+	glTranslatef(0, 2,0 );
+	jetPack(0.3, 4, 2);
+
+	glTranslatef(-2, 2, -2);
+	glRotatef(-90, 0, 1, 0);
+	glTranslatef(3.25, -1.4, -1.7);
+	booster();
+	glTranslatef(1.5, 0, 0);
+	booster();
+
 	glPopMatrix();
 	bodybtm(4, 4, 1, 1, 1, 0);
 	glPopMatrix();
 	 
 	
-
 
 	//middle body block
 	{
@@ -896,6 +937,7 @@ void bodybtm(float wd,float lg,float hg,float r, float g, float b) {
 }
 
 void body(float wd, float lg, float hg, float r, float g, float b) {
+	
 	glColor3f(r, g, b);
 	//top
 	glBegin(GL_QUADS);
@@ -921,14 +963,14 @@ void body(float wd, float lg, float hg, float r, float g, float b) {
 	glVertex3f((wd*0.85), hg, lg);
 	glEnd();
 
-
+	
 	glBegin(GL_QUADS);
 	glVertex3f((wd * 0.85), hg, lg);
 	glVertex3f(wd, 0, lg);
 	glVertex3f(wd, 0, 0);
 	glVertex3f((wd * 0.85), hg, 0);
 	glEnd();
-
+	
 
 	glBegin(GL_POLYGON);
 	glVertex3f((wd * 0.85), hg, 0);
@@ -944,6 +986,8 @@ void body(float wd, float lg, float hg, float r, float g, float b) {
 	glVertex3f((wd*0.85), hg, lg);
 	glVertex3f((wd * 0.85), hg, 0);
 	glEnd();
+
+
 
 }
 
@@ -965,6 +1009,9 @@ void head() {
 }
 
 void arm(float lr) {
+
+
+	glRotatef((anglehand ), 1, 0, 0);
 	glRotatef((angle*lr), 1, 0, 0);
 	if (walk == true) {
 		twz += walkSpeed;
@@ -983,12 +1030,15 @@ void arm(float lr) {
 	glTranslatef(0, -2.5, 0);
 	glPushMatrix();
 	glTranslatef(0.5, 3, 0.5); 
-	glRotatef(-45, 1, 0, 0);    
+	glRotatef(armangle, 1, 0, 0);    
 	glTranslatef(-0.5,-3, -0.5); 
 	cube(3, 1, 1, 1, 1, 1); 
-	if (lr == 1) { weapon(); }
+	if (lr == 1) { weapon(); bullet(); }
 	else { sheild(); }
 	glPopMatrix();
+
+
+
 
 }
 
@@ -1006,5 +1056,125 @@ void sheild() {
 	glRotatef(90, 1, 0, 0);
 	glTranslatef(-2, -4, 0);
 	cube(6, 4, 0.5, 1, 1, 1);
+	cube(6, 4, 0.5, 1, 1, 1);
+}
 
+void jetPack(float wd, float lg, float hg) {
+	
+	/*glTranslatef(0, 0, -0.1);*/
+	glColor3f(0.443, 0.475, 0.494);
+
+	glBegin(GL_POLYGON);
+	glVertex3f(0, 0, (lg * 0.2));
+	glVertex3f(0, 0, (lg * 0.8));
+	glVertex3f(0, (hg * 0.2), lg * 0.9);
+	glVertex3f(0, (hg * 0.4), lg * 0.9);
+	glVertex3f(0, (hg * 0.6), lg * 0.8);
+	glVertex3f(0, (hg * 0.6), (lg * 0.2));
+	glVertex3f(0, (hg * 0.4), (lg * 0.1));
+	glVertex3f(0, (hg * 0.2), (lg * 0.1));
+	glEnd();
+
+	glBegin(GL_QUADS);
+	glVertex3f(0, (hg * 0.2), (lg * 0.1));
+	glVertex3f(-wd, (hg * 0.2), (lg * 0.1));
+	glVertex3f(-wd, (hg * 0.4), (lg * 0.1));
+	glVertex3f(0, (hg * 0.4), lg * 0.1);
+
+	glEnd();
+
+
+	glBegin(GL_QUADS);
+	glVertex3f(0, (hg * 0.4), lg * 0.1);
+	glVertex3f(-wd, (hg * 0.4), (lg * 0.1));
+	glVertex3f(-wd, (hg * 0.6), (lg * 0.2));
+	glVertex3f(0, (hg * 0.6), lg * 0.2);
+
+	glEnd();
+
+	glBegin(GL_QUADS);
+	glVertex3f(0, (hg * 0.6), lg * 0.2);
+	glVertex3f(-wd, (hg * 0.6), (lg * 0.2));
+	glVertex3f(-wd, (hg * 0.6), (lg * 0.8));
+	glVertex3f(0, (hg * 0.6), lg * 0.8);
+
+	glEnd();
+
+	glBegin(GL_QUADS);
+	glVertex3f(0, (hg * 0.6), lg * 0.8);
+	glVertex3f(-wd, (hg * 0.6), (lg * 0.8));
+	glVertex3f(-wd, (hg * 0.4), (lg * 0.9));
+	glVertex3f(0, (hg * 0.4), lg * 0.9);
+
+	glEnd();
+
+	glBegin(GL_QUADS);
+	glVertex3f(0, (hg * 0.4), lg * 0.9);
+	glVertex3f(-wd, (hg * 0.4), (lg * 0.9));
+	glVertex3f(-wd, (hg * 0.2), (lg * 0.9));
+	glVertex3f(0, (hg * 0.2), lg * 0.9);
+
+	glEnd();
+
+	glBegin(GL_QUADS);
+	glVertex3f(0, (hg * 0.2), lg * 0.9);
+	glVertex3f(-wd, (hg * 0.2), lg * 0.9);
+	glVertex3f(-wd, 0, (lg * 0.8));
+	glVertex3f(0, (hg * 0), lg * 0.8);
+
+	glEnd();
+
+	glBegin(GL_QUADS);
+	glVertex3f(-wd, 0, (lg * 0.8));
+	glVertex3f(0, 0, lg * 0.8);
+	glVertex3f(0, 0, lg * 0.2);
+	glVertex3f(-wd,0, (lg * 0.2));
+
+
+	glEnd();
+
+
+	glBegin(GL_QUADS);
+	glVertex3f(0, 0, lg * 0.2);
+	glVertex3f(-wd, 0, lg * 0.2);
+	glVertex3f(-wd, (hg * 0.2), (lg * 0.1));
+	glVertex3f(0, (hg * 0.2), lg * 0.1);
+
+	glEnd();
+
+	glBegin(GL_POLYGON);
+	glVertex3f(-wd, 0, (lg * 0.2));
+	glVertex3f(-wd, 0, (lg * 0.8));
+	glVertex3f(-wd, (hg * 0.2), lg * 0.9);
+	glVertex3f(-wd, (hg * 0.4), lg * 0.9);
+	glVertex3f(-wd, (hg * 0.6), lg * 0.8);
+	glVertex3f(-wd, (hg * 0.6), (lg * 0.2));
+	glVertex3f(-wd, (hg * 0.4), (lg * 0.1));
+	glVertex3f(-wd, (hg * 0.2), (lg * 0.1));
+	glEnd();
+
+
+
+
+	
+}
+
+void booster() {
+	
+	drawCylinder2(0.5, 0.5, 0.3, 0.698, 0.745, 0.71);
+	
+}
+
+void bullet() {
+
+	glTranslatef(0.2, 4, 0.25);
+	if (fire == true) {
+		glTranslatef(0, -bulletT, 0);
+		bulletT += tSpeed*100;
+	}
+	drawSpehere(0.2, 1, 0, 0);
+	if (bulletT >= 50) {
+		bulletT = 0;
+		fire = false;
+	}
 }
