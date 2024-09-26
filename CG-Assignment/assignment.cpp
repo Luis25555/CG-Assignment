@@ -45,7 +45,7 @@ weapon 12 quads
 sheild 6 quads
 
 
-top part (55)
+top part 
 head 7
 arm 18 x 2 = 36
 jetpack 
@@ -57,10 +57,10 @@ body
 4 polygons
 
 
-middle part total (24)
+middle part total 
 24 quads
 
-botom part (100)
+botom part 
 18 QUADS mid
 
 legs
