@@ -122,7 +122,7 @@ lg = length of the cube
 #define WINDOW_TITLE "OpenGL Window"
 
 //function declaration
-
+void background();
 void drawSpehere(float rad, float r, float g, float b);
 void drawCylinder(double br, double tr, double h, float r, float g, float b);
 void drawCylinder2(double br, double tr, double h, float r, float g, float b);
@@ -244,7 +244,12 @@ void display()
 	//--------------------------------
 	//	OpenGL drawing
 	//--------------------------------
+
+	glClearColor(0.5294, 0.8078, 0.9216, 1);
+
+	glDisable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
 
 	//glDisable(GL_DEPTH_TEST); // Background should be drawn without depth test
 
@@ -290,14 +295,18 @@ void display()
 		glLightfv(GL_LIGHT0, GL_DIFFUSE, backLightDiffuse);
 	}break;
 	}
+	
 	glEnable(GL_DEPTH_TEST); //enable the depth test
 	glMatrixMode(GL_MODELVIEW_MATRIX);
 	glEnable(GL_TEXTURE_2D);
 	glLoadIdentity();
 	projection();
+	
 	//glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
-	
-	
+	glPushMatrix();
+	glTranslatef(-10, -29, 0);
+	cube(20, 25, 25,0, 0.5019, 0);
+	glPopMatrix();
 
 	glPushMatrix(); //all
 	
@@ -921,7 +930,7 @@ void arm(float lr) {
 		if (angley <= -30) { chg = false; }
 
 	}
-	cube(2, 2, 2, 0.5372, 0.8118, 0.941);
+	cube(2, 2, 2, 0.0588, 0.3216, 0.7294);
 	if (changetext == false) {
 		textureArr[1] = loadTexture("metal2.bmp");
 	}else{ textureArr[1] = loadTexture("redmetal.bmp"); }
@@ -1413,4 +1422,103 @@ GLuint loadTexture(LPCSTR fileName) {
 
 	DeleteObject(hBMP);
 	return texture;
+}
+
+
+void background() {
+
+	//glColor3f(1, 1, 1);
+	//glBegin(GL_POLYGON);//back
+	//glTexCoord2f(0, 1);
+	//glVertex3f(-20, -20, -9.9);	// Top-left
+
+	//glTexCoord2f(1, 1);
+	//glVertex3f(20, -20, -9.9);  // Top-right
+
+	//glTexCoord2f(1, 0);
+	//glVertex3f(20, 20, -9.9);   // Bottom-right
+
+	//glTexCoord2f(0, 0);
+	//glVertex3f(-20, 20, -9.9);	// Bottom-left
+	//glEnd();
+
+	//glBegin(GL_POLYGON);//left
+
+	//glTexCoord2f(0, 1);
+	//glVertex3f(-20, 20, -9.9);   // front-left
+
+	//glTexCoord2f(1, 1);
+	//glVertex3f(-20, 20, 5);      // back-left
+
+	//glTexCoord2f(1, 0);
+	//glVertex3f(-20, -20, 5);   // Back-right
+
+	//glTexCoord2f(0, 0);
+	//glVertex3f(-20, -20, -5);      // front -right
+	//glEnd();
+
+
+	//glBegin(GL_POLYGON);//right
+
+	//glTexCoord2f(0, 1);
+	//glVertex3f(-20, -20, -5);   // front btm
+
+	//glTexCoord2f(1, 1);
+	//glVertex3f(-20, -20, 5);      //front top
+
+	//glTexCoord2f(1, 0);
+	//glVertex3f(20, -20, 5);  //back-top
+
+	//glTexCoord2f(0, 0);
+	//glVertex3f(20, -20, -5);      //back-btm
+	//glEnd();
+
+	//glBegin(GL_POLYGON);//back
+
+	//glTexCoord2f(0, 1);
+	//glVertex3f(wd, 0, lg);  // btm - right
+
+	//glTexCoord2f(1, 1);
+	//glVertex3f(wd, hg, lg); //top-right
+
+	//glTexCoord2f(1, 0);
+	//glVertex3f(0, hg, lg);	//top-left
+
+	//glTexCoord2f(0, 0);
+	//glVertex3f(0, 0, lg);   //btm-left
+	//glEnd();
+
+	//glBegin(GL_POLYGON);//left
+
+	//glTexCoord2f(0, 1);
+	//glVertex3f(0, 0, lg);   // back - btm
+
+	//glTexCoord2f(1, 1);
+	//glVertex3f(0, 0, 0);      //front - btm
+
+	//glTexCoord2f(1, 0);
+	//glVertex3f(0, hg, 0);  //front - top
+
+	//glTexCoord2f(0, 0);
+	//glVertex3f(0, hg, lg);      //top-right
+	//glEnd();
+
+
+	//glBegin(GL_POLYGON); //top
+
+	//glTexCoord2f(0, 1);
+	//glVertex3f(0, hg, lg);   // back - btm
+
+	//glTexCoord2f(1, 1);
+	//glVertex3f(wd, hg, lg);      //front - btm
+
+	//glTexCoord2f(1, 0);
+	//glVertex3f(wd, hg, 0);  //front - top
+
+	//glTexCoord2f(0, 0);
+	//glVertex3f(0, hg, 0);      //top-right
+	//glEnd();
+
+
+
 }
