@@ -133,6 +133,14 @@
   <ItemGroup>
     <ClCompile Include="assignment.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="bricks.bmp" />
+    <Image Include="metal.bmp" />
+    <Image Include="metal10.bmp" />
+    <Image Include="metal2.bmp" />
+    <Image Include="redmetal.bmp" />
+    <Image Include="sheild.bmp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

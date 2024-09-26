@@ -95,6 +95,12 @@ bool chg = false;
 float anglehand = 0;
 float bulletT = 0;
 void bullet();
+bool changetext = false;
+GLuint loadTexture(LPCSTR fileName);
+
+BITMAP BMP;				//bitmap structure
+HBITMAP hBMP = NULL;
+
 /*
 hg = height of the cube
 wd = width of the cube
@@ -124,6 +130,9 @@ void booster();
 float raiseweapon = 0;
 bool rWeapon = false;
 bool fire = false;
+void leg();
+void rightleg();
+void waist();
 /*
 hg = height of the cube
 wd = width of the cube
@@ -171,6 +180,8 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 		else if ((wParam == 'B')) { anglehand -= rSpeed; }
 		else if ((wParam == VK_F1)) { rWeapon = true; }
 		else if ((wParam == VK_F2)) { fire = true; }
+		else if ((wParam == VK_F3)) { changetext = !changetext; }
+		
 		break;
 
 	default:
@@ -236,19 +247,15 @@ void display()
 
 	glEnable(GL_DEPTH_TEST); //enable the depth test
 	glMatrixMode(GL_MODELVIEW_MATRIX);
+	glEnable(GL_TEXTURE_2D);
 	//glLoadIdentity();
 	projection();
 	glPushMatrix(); //all
 	
 
 	glTranslatef(twx, twy, twz);
-	
-	
 	glPushMatrix();
-
 	glTranslatef(-3, 4, -0.5);
-	
-	
 	arm(-1);
 	glPopMatrix();
 
@@ -260,7 +267,6 @@ void display()
 			glRotatef((raiseweapon), 1, 0, 0);
 		}
 	}
-	
 	arm(1);
 	glPopMatrix();
 
@@ -285,293 +291,15 @@ void display()
 	booster();
 	glTranslatef(1.5, 0, 0);
 	booster();
-
 	glPopMatrix();
 	bodybtm(4, 4, 1, 1, 1, 0);
 	glPopMatrix();
 	 
-	
-
-	//middle body block
-	{
-		// btm left cube
-		glPushMatrix();
-
-		glTranslatef(-0.1, 0, 0);
-
-		cube(1, 1, 2, 0.8, 0.761, 0.737);
-		linecube(1, 1, 2, 0, 0, 0, 1);
-		// btm right cube
-
-		glPushMatrix(); //right
-		glTranslatef(1, 0, 0);
-		cube(1, 1, 2, 0.8, 0.761, 0.737);
-		linecube(1, 1, 2, 0, 0, 0, 1);
-		glPopMatrix();//right
-
-
-		//top left cube
-		glPushMatrix();
-		glTranslatef(0, 1, 0);
-		cube(1, 1, 2, 0.8, 0.761, 0.737);
-		linecube(1, 1, 2, 0, 0, 0, 1);
-		glPopMatrix();
-
-		//top right cube
-		glPushMatrix();
-		glTranslatef(1, 1, 0);
-		cube(1, 1, 2, 0.8, 0.761, 0.737);
-		linecube(1, 1, 2, 0, 0, 0, 1);
-		glPopMatrix();
-
-		glPopMatrix();
-	}
-
-	//bottom body block
-	{
-		//middle cube
-		glPushMatrix();
-		glTranslatef(0.75, -1.5, 0);
-		linecube(1.5, 0.3, 2, 0, 0, 0, 1);
-		cube(1.5, 0.3, 2, 1, 1, 1);
-		glPopMatrix();
-		//left cube
-		glPushMatrix();
-		glTranslatef(0.45, -1.5, 0);
-		linecube(1.5, 0.3, 2, 0, 0, 0, 1);
-		cube(1.5, 0.3, 2, 1, 1, 1);
-		glPopMatrix();
-		//right cube
-		glPushMatrix();
-		glTranslatef(1.05, -1.5, 0);
-		linecube(1.5, 0.3, 2, 0, 0, 0, 1);
-		cube(1.5, 0.3, 2, 1, 1, 1);
-		glPopMatrix();
-	}
-
-	//leg left
-	{
-		glPushMatrix();//whole leg
-		glTranslatef(0, -1.5, 0.5);
-		glRotatef(angle, 1, 0, 0);
-		if (walk == true) {
-			twz += walkSpeed;
-			if (chg == false) { angle += rSpeed; anglex -= rxSpeed; angley += rySpeed; }
-			else { angle -= rSpeed; anglex += rxSpeed;angley -= rySpeed;}
-
-			if (angley >= 30 ){ chg = true; }
-			if (angley <= -30) { chg = false; }
-
-			
-		}
-
-
-		glTranslatef(0, 1.5, -0.5);
-		//glTranslatef(tx, 0, 0);
-		//thigh
-		glPushMatrix();//thigh
-		glTranslatef(-0.32, -1.5, 0.5);
-		linecube(1.5, 0.75, 1, 0, 0, 0, 1);
-		cube(1.5, 0.75, 1, 1, 1, 1);
-		glPopMatrix();//thigh
-
-		//connector
-		glPushMatrix();//conn
-		glTranslatef(-0.55, -2, 0.41);
-
-		linecube(0.5, 1.2, 1.2, 0, 0, 0, 1);
-		cube(0.5, 1.2, 1.2, 1, 1, 1);
-		glPopMatrix();//conn
-
-		glPushMatrix();//bigleg
-		glTranslatef(-0.32, -5, 0.5);
-		linecube(3, 0.75, 1, 0, 0, 0, 1);
-		cube(3, 0.75, 1, 1, 1, 1);
-		glPopMatrix();//bigleg
-
-
-
-		//knee cylinder inner	
-		glPushMatrix();//knee cyl inner
-		glTranslatef(0.2, -5.5, 1);
-		glRotatef(90, 0, 1, 0);
-		drawCylinder(0.5, 0.5, 0.5, 1, 1, 1);
-
-		drawDisk(0, 0.5, 1, 1, 0);
-
-		glTranslatef(0, 0, 0.5);
-		drawDisk(0, 0.5, 1, 0, 0);
-
-		glPopMatrix();//knee cyl inner
-		//knee cylinder outer
-		glPushMatrix();//knee cyl outer
-		glTranslatef(-0.6, -5.5, 1);
-		glRotatef(90, 0, 1, 0);
-		drawCylinder(0.5, 0.5, 0.5, 1, 1, 1);
-		drawDisk(0, 0.5, 1, 1, 0);
-		//disk inner
-		glTranslatef(0, 0, 0.5);
-		drawDisk(0, 0.5, 1, 0, 0);
-		//disk inner
-		glPopMatrix();//knee cyl outer
-
-		//btm leg
-		glPushMatrix(); //btm leg
-		glTranslatef(0, -5.5, 1);
-
-		glRotatef(anglex, 1, 0, 0);
-		glTranslatef(0, 5.5, -1);
-
-
-
-
-		//small leg
-		glPushMatrix();//small leg
-
-		glTranslatef(-0.32, -8, 0.5);
-		linecube(2, 0.75, 1, 0, 0, 0, 1);
-		cube(2, 0.75, 1, 1, 1, 1);
-		glPushMatrix();//knee cap
-		glTranslatef(0.1, 1.7, 0.5);
-		glRotatef(30, 1, 0, 0);
-		cube(2, 0.5, 0.5, 1, 1, 1);
-		linecube(2, 0.5, 0.5, 0, 0, 0, 1);
-
-		glTranslatef(0, -1.5, 1);
-		glRotatef(angley, 1, 0, 0);
-		glTranslatef(0, 1.5, -1);
-
-
-		//ankle
-		glPushMatrix();
-		glRotatef(-30, 1, 0, 0);
-		glTranslatef(-0.5, -2.7, -1);
-
-		linecube(1, 1.5, 2.5, 0, 0, 0, 1);
-		cube(1, 1.5, 2.5, 1, 1, 1);
-		glTranslatef(0, 0, 3.5);
-		glRotatef(90, 0, 1, 0);
-		shoes(1.5, 1, 1, 1, 1, 0);
-
-
-		glPopMatrix();//ankle
-		glPopMatrix();//knee cap
-
-		//right leg
-		{
-			glPushMatrix();//whole leg
-			glTranslatef(1.65, 0, 0);
-			glTranslatef(0, -1.5, 0.5);
-			glRotatef(-angle, 1, 0, 0);
-			glTranslatef(0, 1.5, -0.5);
-			//glTranslatef(tx, 0, 0);
-			//thigh
-			glPushMatrix();//thigh
-			glTranslatef(-0.32, -1.5, 0.5);
-			linecube(1.5, 0.75, 1, 0, 0, 0, 1);
-			cube(1.5, 0.75, 1, 1, 1, 1);
-			glPopMatrix();//thigh
-
-			//connector
-			glPushMatrix();//conn
-			glTranslatef(-0.55, -2, 0.41);
-
-			linecube(0.5, 1.2, 1.2, 0, 0, 0, 1);
-			cube(0.5, 1.2, 1.2, 1, 1, 1);
-			glPopMatrix();//conn
-
-			glPushMatrix();//bigleg
-			glTranslatef(-0.32, -5, 0.5);
-			linecube(3, 0.75, 1, 0, 0, 0, 1);
-			cube(3, 0.75, 1, 1, 1, 1);
-			glPopMatrix();//bigleg
-
-
-
-			//knee cylinder inner	
-			glPushMatrix();//knee cyl inner
-			glTranslatef(0.2, -5.5, 1);
-			glRotatef(90, 0, 1, 0);
-			drawCylinder(0.5, 0.5, 0.5, 1, 1, 1);
-
-			drawDisk(0, 0.5, 1, 1, 0);
-
-			glTranslatef(0, 0, 0.5);
-			drawDisk(0, 0.5, 1, 0, 0);
-
-			glPopMatrix();//knee cyl inner
-			//knee cylinder outer
-			glPushMatrix();//knee cyl outer
-			glTranslatef(-0.6, -5.5, 1);
-			glRotatef(90, 0, 1, 0);
-			drawCylinder(0.5, 0.5, 0.5, 1, 1, 1);
-			drawDisk(0, 0.5, 1, 1, 0);
-			//disk inner
-			glTranslatef(0, 0, 0.5);
-			drawDisk(0, 0.5, 1, 0, 0);
-			//disk inner
-			glPopMatrix();//knee cyl outer
-
-			//btm leg
-			glPushMatrix(); //btm leg
-			glTranslatef(0, -5.5, 1);
-
-			glRotatef(-anglex, 1, 0, 0);
-			glTranslatef(0, 5.5, -1);
-
-
-
-
-			//small leg
-			glPushMatrix();//small leg
-
-			glTranslatef(-0.32, -8, 0.5);
-			linecube(2, 0.75, 1, 0, 0, 0, 1);
-			cube(2, 0.75, 1, 1, 1, 1);
-			glPushMatrix();//knee cap
-			glTranslatef(0.1, 1.7, 0.5);
-			glRotatef(30, 1, 0, 0);
-			cube(2, 0.5, 0.5, 1, 1, 1);
-			linecube(2, 0.5, 0.5, 0, 0, 0, 1);
-			//ankle
-
-			glTranslatef(0, -1.5, 1);
-			glRotatef(angley, 1, 0, 0);
-			glTranslatef(0, 1.5, -1);
-
-			glPushMatrix();
-			glRotatef(-30, 1, 0, 0);
-			glTranslatef(-0.5, -2.7, -1);
-
-			linecube(1, 1.5, 2.5, 0, 0, 0, 1);
-			cube(1, 1.5, 2.5, 1, 1, 1);
-			glTranslatef(0, 0, 3.5);
-			glRotatef(90, 0, 1, 0);
-			shoes(1.5, 1, 1, 1, 1, 0);
-
-			glPopMatrix();//ankle
-			glPopMatrix();//knee cap
-			glPopMatrix();//smallleg
-			glPopMatrix(); //btm leg
-			glPopMatrix();//whole leg
-		}
-
-		glPopMatrix();//smallleg
-
-
-
-		glPopMatrix(); //btm leg
-
-		
-
-		glPopMatrix();//whole leg
-	}
-
+	waist();
+	leg();
+	rightleg();
 	
 	
-
-
-	glPopMatrix(); // all
 
 
 
@@ -688,50 +416,93 @@ void cube(float hg, float wd, float lg  , float r, float g, float b) {
 	glColor3f(r, g, b);
 	
 	glBegin(GL_POLYGON);//front
+	glTexCoord2f(0, 1);
 	glVertex3f(0, hg, 0);	// Top-left
+
+	glTexCoord2f(1, 1);
 	glVertex3f(wd,hg , 0);  // Top-right
+
+	glTexCoord2f(1, 0);
 	glVertex3f(wd, 0, 0);   // Bottom-right
+
+	glTexCoord2f(0, 0);
 	glVertex3f(0, 0, 0);	// Bottom-left
 	glEnd();
 	
 	glBegin(GL_POLYGON);//btm
+
+	glTexCoord2f(0, 1);
 	glVertex3f(0, 0, 0);   // front-left
+
+	glTexCoord2f(1, 1);
 	glVertex3f(0, 0, lg);      // back-left
+
+	glTexCoord2f(1, 0);
 	glVertex3f(wd,0,lg);   // Back-right
+
+	glTexCoord2f(0, 0);
 	glVertex3f(wd, 0, 0);      // front -right
 	glEnd();
 
 
 	glBegin(GL_POLYGON);//right
 	
+	glTexCoord2f(0, 1);
 	glVertex3f(wd, 0, 0);   // front btm
+
+	glTexCoord2f(1, 1);
 	glVertex3f(wd,hg , 0);      //front top
+
+	glTexCoord2f(1, 0);
 	glVertex3f(wd, hg, lg);  //back-top
+
+	glTexCoord2f(0, 0);
 	glVertex3f(wd, 0, lg);      //back-btm
 	glEnd();
 
 	glBegin(GL_POLYGON);//back
-	
+
+	glTexCoord2f(0, 1);
 	glVertex3f(wd, 0, lg);  // btm - right
+
+	glTexCoord2f(1, 1);
 	glVertex3f(wd, hg, lg); //top-right
+
+	glTexCoord2f(1, 0);
 	glVertex3f(0, hg, lg);	//top-left
+
+	glTexCoord2f(0, 0);
 	glVertex3f(0, 0, lg);   //btm-left
 	glEnd();
 
 	glBegin(GL_POLYGON);//left
 	
+	glTexCoord2f(0, 1);
 	glVertex3f(0, 0, lg);   // back - btm
+
+	glTexCoord2f(1, 1);
 	glVertex3f(0,0,0 );      //front - btm
+
+	glTexCoord2f(1, 0);
 	glVertex3f(0, hg, 0);  //front - top
+
+	glTexCoord2f(0, 0);
 	glVertex3f(0, hg,lg );      //top-right
 	glEnd();
 
 
 	glBegin(GL_POLYGON); //top
-	
+
+	glTexCoord2f(0, 1);
 	glVertex3f(0, hg, lg);   // back - btm
+
+	glTexCoord2f(1, 1);
 	glVertex3f(wd, hg, lg);      //front - btm
+
+	glTexCoord2f(1, 0);
 	glVertex3f(wd, hg, 0);  //front - top
+
+	glTexCoord2f(0, 0);
 	glVertex3f(0, hg, 0);      //top-right
 	glEnd();
 
@@ -902,7 +673,7 @@ void shoes(float lg,float wd,float hg, float r,float g,float b) {
 
 }
 void bodybtm(float wd,float lg,float hg,float r, float g, float b) {
-	glColor3f(r, g, b);
+	//glColor3f(r, g, b);
 	//top
 	glBegin(GL_QUADS);
 	glVertex3f(0, hg, 0);
@@ -955,57 +726,105 @@ void bodybtm(float wd,float lg,float hg,float r, float g, float b) {
 
 void body(float wd, float lg, float hg, float r, float g, float b) {
 	
-	glColor3f(r, g, b);
+	GLuint textureArr[2];
+
+	textureArr[1] = loadTexture("metal2.bmp");
+
+	//glColor3f(r, g, b);
 	//top
 	glBegin(GL_QUADS);
+	glTexCoord2f(0, 1);
 	glVertex3f(0, 0, 0);
+
+	glTexCoord2f(1, 1);
 	glVertex3f(wd, 0, 0);
+
+	glTexCoord2f(1, 0);
 	glVertex3f(wd, 0, lg);
+
+	glTexCoord2f(0, 0);
 	glVertex3f(0, 0, lg);
+
+
 	glEnd();
-
-
+	
+	
 	glBegin(GL_QUADS);
+
+	glTexCoord2f(0, 1);
 	glVertex3f(0, 0, lg);
+
+	glTexCoord2f(1, 1);
 	glVertex3f(0, 0, 0);
+
+	glTexCoord2f(1, 0);
 	glVertex3f(0, hg, 0);
-	glVertex3f(0, hg, lg);
-	glEnd();
 
-
-	glBegin(GL_POLYGON);
+	glTexCoord2f(0, 0);
 	glVertex3f(0, hg, lg);
-	glVertex3f(0, 0, lg);
-	glVertex3f(wd, 0, lg);
-	glVertex3f((wd*0.85), hg, lg);
 	glEnd();
 
 	
+	glBegin(GL_POLYGON);
+
+	glTexCoord2f(0, 1);
+	glVertex3f(0, hg, lg);
+
+	glTexCoord2f(1, 1);
+	glVertex3f(0, 0, lg);
+
+	glTexCoord2f(1, 0);
+	glVertex3f(wd, 0, lg);
+
+	glTexCoord2f(0, 0);
+	glVertex3f((wd*0.85), hg, lg);
+	glEnd();
+	
+	
+	
 	glBegin(GL_QUADS);
+	glTexCoord2f(0, 1);
 	glVertex3f((wd * 0.85), hg, lg);
+	glTexCoord2f(1, 1);
 	glVertex3f(wd, 0, lg);
+	glTexCoord2f(1, 0);
 	glVertex3f(wd, 0, 0);
+	glTexCoord2f(0, 0);
 	glVertex3f((wd * 0.85), hg, 0);
 	glEnd();
 	
-
+	
+	glColor3f(r, g, b);
+	
 	glBegin(GL_POLYGON);
+
+	glTexCoord2f(0, 1);
 	glVertex3f((wd * 0.85), hg, 0);
+
+	glTexCoord2f(1, 1);
 	glVertex3f(wd, 0, 0);
+
+	glTexCoord2f(1, 0);
 	glVertex3f(0, 0, 0);
+
+	glTexCoord2f(0, 0);
 	glVertex3f(0, hg, 0);
 	glEnd();
 
 
 	glBegin(GL_QUADS);
+	glTexCoord2f(0, 1);
 	glVertex3f(0,hg,0);
+	glTexCoord2f(1, 1);
 	glVertex3f(0, hg, lg);
+	glTexCoord2f(1, 0);
 	glVertex3f((wd*0.85), hg, lg);
+	glTexCoord2f(0, 0);
 	glVertex3f((wd * 0.85), hg, 0);
 	glEnd();
 
 
-
+	glDeleteTextures(1, &textureArr[1]);
 }
 
 void neck() {
@@ -1026,7 +845,9 @@ void head() {
 }
 
 void arm(float lr) {
+	GLuint textureArr[2];
 
+	
 
 	glRotatef((anglehand ), 1, 0, 0);
 	glRotatef((angle*lr), 1, 0, 0);
@@ -1040,8 +861,10 @@ void arm(float lr) {
 
 	}
 	cube(2, 2, 2, 0, 0, 1);
-
-
+	if (changetext == false) {
+		textureArr[1] = loadTexture("metal2.bmp");
+	}else{ textureArr[1] = loadTexture("redmetal.bmp"); }
+	
 	glTranslatef(0.5, -3, 0.5);
 	cube(3, 1, 1, 1, 1, 1); // Cube 1
 	glTranslatef(0, -2.5, 0);
@@ -1050,13 +873,14 @@ void arm(float lr) {
 	glRotatef(armangle, 1, 0, 0);    
 	glTranslatef(-0.5,-3, -0.5); 
 	cube(3, 1, 1, 1, 1, 1); 
+	glDeleteTextures(1, &textureArr[1]);
 	if (lr == 1) { weapon(); if(fire == true)bullet(); }
 	else { sheild(); }
 	glPopMatrix();
 
 
 
-
+	
 }
 
 void weapon() {
@@ -1070,11 +894,19 @@ void weapon() {
 }
 
 void sheild() {
+	GLuint textureArr[2];
+	if (changetext == true) {
+		textureArr[1] = loadTexture("redhex.bmp");
+	}
+	else
+	{
+		textureArr[1] = loadTexture("sheild.bmp");
+	}
 	glRotatef(90, 1, 0, 0);
 	glTranslatef(-2, -4, 0);
 
 	cube(6, 4, 0.5, 1, 1, 1);
-	
+	glDeleteTextures(1, &textureArr[1]);
 }
 
 void jetPack(float wd, float lg, float hg) {
@@ -1195,4 +1027,302 @@ void bullet() {
 		bulletT = 0;
 		fire = false;
 	}
+}
+
+void leg() {
+	glPushMatrix();//whole leg
+	glTranslatef(0, -1.5, 0.5);
+	glRotatef(angle, 1, 0, 0);
+	if (walk == true) {
+		twz += walkSpeed;
+		if (chg == false) { angle += rSpeed; anglex -= rxSpeed; angley += rySpeed; }
+		else { angle -= rSpeed; anglex += rxSpeed;angley -= rySpeed; }
+
+		if (angley >= 30) { chg = true; }
+		if (angley <= -30) { chg = false; }
+
+
+	}
+
+
+	glTranslatef(0, 1.5, -0.5);
+	//glTranslatef(tx, 0, 0);
+	//thigh
+	glPushMatrix();//thigh
+	glTranslatef(-0.32, -1.5, 0.5);
+	linecube(1.5, 0.75, 1, 0, 0, 0, 1);
+	cube(1.5, 0.75, 1, 1, 1, 1);
+	glPopMatrix();//thigh
+
+	//connector
+	glPushMatrix();//conn
+	glTranslatef(-0.55, -2, 0.41);
+
+	linecube(0.5, 1.2, 1.2, 0, 0, 0, 1);
+	cube(0.5, 1.2, 1.2, 1, 1, 1);
+	glPopMatrix();//conn
+
+	glPushMatrix();//bigleg
+	glTranslatef(-0.32, -5, 0.5);
+	linecube(3, 0.75, 1, 0, 0, 0, 1);
+	cube(3, 0.75, 1, 1, 1, 1);
+	glPopMatrix();//bigleg
+
+
+
+	//knee cylinder inner	
+	glPushMatrix();//knee cyl inner
+	glTranslatef(0.2, -5.5, 1);
+	glRotatef(90, 0, 1, 0);
+	drawCylinder(0.5, 0.5, 0.5, 1, 1, 1);
+
+	drawDisk(0, 0.5, 1, 1, 0);
+
+	glTranslatef(0, 0, 0.5);
+	drawDisk(0, 0.5, 1, 0, 0);
+
+	glPopMatrix();//knee cyl inner
+	//knee cylinder outer
+	glPushMatrix();//knee cyl outer
+	glTranslatef(-0.6, -5.5, 1);
+	glRotatef(90, 0, 1, 0);
+	drawCylinder(0.5, 0.5, 0.5, 1, 1, 1);
+	drawDisk(0, 0.5, 1, 1, 0);
+	//disk inner
+	glTranslatef(0, 0, 0.5);
+	drawDisk(0, 0.5, 1, 0, 0);
+	//disk inner
+	glPopMatrix();//knee cyl outer
+
+	//btm leg
+	glPushMatrix(); //btm leg
+	glTranslatef(0, -5.5, 1);
+
+	glRotatef(anglex, 1, 0, 0);
+	glTranslatef(0, 5.5, -1);
+
+
+
+
+	//small leg
+	glPushMatrix();//small leg
+
+	glTranslatef(-0.32, -8, 0.5);
+	linecube(2, 0.75, 1, 0, 0, 0, 1);
+	cube(2, 0.75, 1, 1, 1, 1);
+	glPushMatrix();//knee cap
+	glTranslatef(0.1, 1.7, 0.5);
+	glRotatef(30, 1, 0, 0);
+	cube(2, 0.5, 0.5, 1, 1, 1);
+	linecube(2, 0.5, 0.5, 0, 0, 0, 1);
+
+	glTranslatef(0, -1.5, 1);
+	glRotatef(angley, 1, 0, 0);
+	glTranslatef(0, 1.5, -1);
+
+
+	//ankle
+	glPushMatrix();
+	glRotatef(-30, 1, 0, 0);
+	glTranslatef(-0.5, -2.7, -1);
+
+	linecube(1, 1.5, 2.5, 0, 0, 0, 1);
+	cube(1, 1.5, 2.5, 1, 1, 1);
+	glTranslatef(0, 0, 3.5);
+	glRotatef(90, 0, 1, 0);
+	shoes(1.5, 1, 1, 1, 1, 0);
+
+
+	glPopMatrix();//ankle
+	glPopMatrix();//knee cap
+}
+
+void rightleg() {
+
+	{
+		glPushMatrix();//whole leg
+		glTranslatef(1.65, 0, 0);
+		glTranslatef(0, -1.5, 0.5);
+		glRotatef(-angle, 1, 0, 0);
+		glTranslatef(0, 1.5, -0.5);
+		//glTranslatef(tx, 0, 0);
+		//thigh
+		glPushMatrix();//thigh
+		glTranslatef(-0.32, -1.5, 0.5);
+		linecube(1.5, 0.75, 1, 0, 0, 0, 1);
+		cube(1.5, 0.75, 1, 1, 1, 1);
+		glPopMatrix();//thigh
+
+		//connector
+		glPushMatrix();//conn
+		glTranslatef(-0.55, -2, 0.41);
+
+		linecube(0.5, 1.2, 1.2, 0, 0, 0, 1);
+		cube(0.5, 1.2, 1.2, 1, 1, 1);
+		glPopMatrix();//conn
+
+		glPushMatrix();//bigleg
+		glTranslatef(-0.32, -5, 0.5);
+		linecube(3, 0.75, 1, 0, 0, 0, 1);
+		cube(3, 0.75, 1, 1, 1, 1);
+		glPopMatrix();//bigleg
+
+
+
+		//knee cylinder inner	
+		glPushMatrix();//knee cyl inner
+		glTranslatef(0.2, -5.5, 1);
+		glRotatef(90, 0, 1, 0);
+		drawCylinder(0.5, 0.5, 0.5, 1, 1, 1);
+
+		drawDisk(0, 0.5, 1, 1, 0);
+
+		glTranslatef(0, 0, 0.5);
+		drawDisk(0, 0.5, 1, 0, 0);
+
+		glPopMatrix();//knee cyl inner
+		//knee cylinder outer
+		glPushMatrix();//knee cyl outer
+		glTranslatef(-0.6, -5.5, 1);
+		glRotatef(90, 0, 1, 0);
+		drawCylinder(0.5, 0.5, 0.5, 1, 1, 1);
+		drawDisk(0, 0.5, 1, 1, 0);
+		//disk inner
+		glTranslatef(0, 0, 0.5);
+		drawDisk(0, 0.5, 1, 0, 0);
+		//disk inner
+		glPopMatrix();//knee cyl outer
+
+		//btm leg
+		glPushMatrix(); //btm leg
+		glTranslatef(0, -5.5, 1);
+
+		glRotatef(-anglex, 1, 0, 0);
+		glTranslatef(0, 5.5, -1);
+
+
+
+
+		//small leg
+		glPushMatrix();//small leg
+
+		glTranslatef(-0.32, -8, 0.5);
+		linecube(2, 0.75, 1, 0, 0, 0, 1);
+		cube(2, 0.75, 1, 1, 1, 1);
+		glPushMatrix();//knee cap
+		glTranslatef(0.1, 1.7, 0.5);
+		glRotatef(30, 1, 0, 0);
+		cube(2, 0.5, 0.5, 1, 1, 1);
+		linecube(2, 0.5, 0.5, 0, 0, 0, 1);
+		//ankle
+
+		glTranslatef(0, -1.5, 1);
+		glRotatef(angley, 1, 0, 0);
+		glTranslatef(0, 1.5, -1);
+
+		glPushMatrix();
+		glRotatef(-30, 1, 0, 0);
+		glTranslatef(-0.5, -2.7, -1);
+
+		linecube(1, 1.5, 2.5, 0, 0, 0, 1);
+		cube(1, 1.5, 2.5, 1, 1, 1);
+		glTranslatef(0, 0, 3.5);
+		glRotatef(90, 0, 1, 0);
+		shoes(1.5, 1, 1, 1, 1, 0);
+
+		glPopMatrix();//ankle
+		glPopMatrix();//knee cap
+		glPopMatrix();//smallleg
+		glPopMatrix(); //btm leg
+		glPopMatrix();//whole leg
+	}
+
+	glPopMatrix();//smallleg
+
+
+
+	glPopMatrix(); //btm leg
+}
+
+void waist() {
+
+	{
+		// btm left cube
+		glPushMatrix();
+
+		glTranslatef(-0.1, 0, 0);
+
+		cube(1, 1, 2, 0.8, 0.761, 0.737);
+		linecube(1, 1, 2, 0, 0, 0, 1);
+		// btm right cube
+
+		glPushMatrix(); //right
+		glTranslatef(1, 0, 0);
+		cube(1, 1, 2, 0.8, 0.761, 0.737);
+		linecube(1, 1, 2, 0, 0, 0, 1);
+		glPopMatrix();//right
+
+
+		//top left cube
+		glPushMatrix();
+		glTranslatef(0, 1, 0);
+		cube(1, 1, 2, 0.8, 0.761, 0.737);
+		linecube(1, 1, 2, 0, 0, 0, 1);
+		glPopMatrix();
+
+		//top right cube
+		glPushMatrix();
+		glTranslatef(1, 1, 0);
+		cube(1, 1, 2, 0.8, 0.761, 0.737);
+		linecube(1, 1, 2, 0, 0, 0, 1);
+		glPopMatrix();
+
+		glPopMatrix();
+	}
+
+	//bottom body block
+	{
+		//middle cube
+		glPushMatrix();
+		glTranslatef(0.75, -1.5, 0);
+		linecube(1.5, 0.3, 2, 0, 0, 0, 1);
+		cube(1.5, 0.3, 2, 1, 1, 1);
+		glPopMatrix();
+		//left cube
+		glPushMatrix();
+		glTranslatef(0.45, -1.5, 0);
+		linecube(1.5, 0.3, 2, 0, 0, 0, 1);
+		cube(1.5, 0.3, 2, 1, 1, 1);
+		glPopMatrix();
+		//right cube
+		glPushMatrix();
+		glTranslatef(1.05, -1.5, 0);
+		linecube(1.5, 0.3, 2, 0, 0, 0, 1);
+		cube(1.5, 0.3, 2, 1, 1, 1);
+		glPopMatrix();
+	}
+}
+
+GLuint loadTexture(LPCSTR fileName) {
+
+
+	//step 1
+	GLuint texture = 0;		//texture name
+
+
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+	//step 3
+	HBITMAP hBMP = (HBITMAP)LoadImage(GetModuleHandle(NULL), fileName, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE);
+	GetObject(hBMP, sizeof(BMP), &BMP);
+
+	//step 4
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, BMP.bmWidth, BMP.bmHeight, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, BMP.bmBits);
+
+
+	DeleteObject(hBMP);
+	return texture;
 }

@@ -19,4 +19,24 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="metal10.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="bricks.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="metal.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="metal2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="sheild.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="redmetal.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
 </Project>
