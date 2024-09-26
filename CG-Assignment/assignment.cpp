@@ -15,7 +15,7 @@ s rotate camera to bottom
 
 A move camera left
 D move camera right
-SPACE to reset camera
+SPACE to reset everything
 
 press 1 for front view
 press 2 for back view
@@ -29,9 +29,13 @@ V lower arms
 M raise ankle
 N lower ankle
 
+F1 raise weapon
 F2 fire gun
-
-
+F3 change texture
+F4 switch on/off light
+8,9,10 change light directions
+Z walking
+X stop walking
 */
 
 /*
@@ -96,6 +100,14 @@ float anglehand = 0;
 float bulletT = 0;
 void bullet();
 bool changetext = false;
+bool lighton = false;
+int lightNo = 1;
+
+GLfloat diffuse[] = { 0.8, 0.8, 0.8, 1.0 };
+
+GLfloat diffuseLight[] = { 1.0f, 0.0f, 0.0f, 1.0f };
+GLfloat ambientLight[] = { 0.2f, 0.0f, 0.0f, 1.0f };
+
 GLuint loadTexture(LPCSTR fileName);
 
 BITMAP BMP;				//bitmap structure
@@ -152,7 +164,7 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 		if (wParam == VK_ESCAPE) PostQuitMessage(0);
 		else if ((wParam == VK_LEFT)) { twx -= twSpeed; }
 		else if ((wParam == VK_RIGHT)) { twx += twSpeed; }
-		else if ((wParam == VK_SPACE)) { tx = 0;tz = 0;ty = 0; ptrx = 45; ptry = -45; ptx = 0;pty = 0; angle = 0; }
+		else if ((wParam == VK_SPACE)) { tx = 0;tz = 0;ty = 0; ptrx = 45; ptry = -45; ptx = 0;pty = 0; angle = 0; twx = 0; twz = 0; anglex = 0; armangle = 0;anglehand = 0; angley = 0;raiseweapon = 0; }
 		else if ((wParam == '1')) { ptrx = 0; ptry = 0; ptx = 0;pty = 0; }
 		else if ((wParam == '2')) { ptrx = 0; ptry = 180; ptx = 0;pty = 0; }
 		else if ((wParam == '3')) { ptrx = 90; ptry = 0; ptx = 0;pty = 0; }
@@ -181,7 +193,10 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 		else if ((wParam == VK_F1)) { rWeapon = true; }
 		else if ((wParam == VK_F2)) { fire = true; }
 		else if ((wParam == VK_F3)) { changetext = !changetext; }
-		
+		else if ((wParam == VK_F4)) { lighton = !lighton; }
+		else if ((wParam == '8')) { lightNo = 1; }
+		else if ((wParam == '9')) { lightNo = 2; }
+		else if ((wParam == '0')) { lightNo = 3; }
 		break;
 
 	default:
@@ -243,13 +258,47 @@ void display()
 	//glVertex3f(-20, -20, -5);
 	//glEnd();
 
-	
+	if (lighton == true) {
 
+		glEnable(GL_LIGHTING);         // Enable lighting
+		glEnable(GL_LIGHT0);
+
+	}
+	else {
+		glDisable(GL_LIGHTING);
+		glDisable(GL_LIGHT0);
+	}
+	
+	switch (lightNo) {
+
+	case 1: {
+		GLfloat  keyLightPosition[] = { 2.0f, 3.0f, 5.0f, 1.0f };
+		GLfloat keyLightDiffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+		glLightfv(GL_LIGHT0, GL_POSITION, keyLightPosition);
+		glLightfv(GL_LIGHT0, GL_DIFFUSE, keyLightDiffuse);
+	}break;
+	case 2: {
+		GLfloat fillLightPosition[] = { -2.0f, 1.0f, 4.0f, 1.0f };
+		GLfloat fillLightDiffuse[] = { 0.5f, 0.5f, 0.5f, 1.0f };
+		glLightfv(GL_LIGHT0, GL_POSITION, fillLightPosition);
+		glLightfv(GL_LIGHT0, GL_DIFFUSE, fillLightDiffuse);
+	}break;
+	case 3: {
+		GLfloat backLightPosition[] = { 0.0f, 4.0f, -3.0f, 1.0f };
+		GLfloat backLightDiffuse[] = { 0.7f, 0.7f, 0.7f, 1.0f };
+		glLightfv(GL_LIGHT0, GL_POSITION, backLightPosition);
+		glLightfv(GL_LIGHT0, GL_DIFFUSE, backLightDiffuse);
+	}break;
+	}
 	glEnable(GL_DEPTH_TEST); //enable the depth test
 	glMatrixMode(GL_MODELVIEW_MATRIX);
 	glEnable(GL_TEXTURE_2D);
 	glLoadIdentity();
 	projection();
+	//glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+	
+	
+
 	glPushMatrix(); //all
 	
 
@@ -261,12 +310,14 @@ void display()
 
 	glPushMatrix();
 	glTranslatef(3, 4, -0.5);
-	if (rWeapon == true) {
-		if (raiseweapon >= -45) {
-			raiseweapon -= rSpeed;
-			glRotatef((raiseweapon), 1, 0, 0);
+	if (rWeapon && raiseweapon > -45.0f) {
+		raiseweapon -= 1.0f;  // Decrement the raiseWeapon angle (smoothly rotate towards -45)
+		if (raiseweapon < -45.0f) {
+			raiseweapon = -45.0f;  // Clamp the rotation to -45 degrees to stop
 		}
 	}
+	glRotatef(raiseweapon, 1, 0, 0);
+	
 	arm(1);
 	glPopMatrix();
 
@@ -870,7 +921,7 @@ void arm(float lr) {
 		if (angley <= -30) { chg = false; }
 
 	}
-	cube(2, 2, 2, 0, 0, 1);
+	cube(2, 2, 2, 0.5372, 0.8118, 0.941);
 	if (changetext == false) {
 		textureArr[1] = loadTexture("metal2.bmp");
 	}else{ textureArr[1] = loadTexture("redmetal.bmp"); }
@@ -1040,7 +1091,7 @@ void bullet() {
 		bulletT += tSpeed*100;
 	}
 	drawSpehere(0.2, 1, 0, 0);
-	if (bulletT >= 50) {
+	if (bulletT >= 20) {
 		bulletT = 0;
 		fire = false;
 	}
