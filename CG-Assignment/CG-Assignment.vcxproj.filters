@@ -38,5 +38,8 @@
     <Image Include="redmetal.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="weapon.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

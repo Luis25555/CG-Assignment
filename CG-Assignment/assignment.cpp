@@ -248,7 +248,7 @@ void display()
 	glEnable(GL_DEPTH_TEST); //enable the depth test
 	glMatrixMode(GL_MODELVIEW_MATRIX);
 	glEnable(GL_TEXTURE_2D);
-	//glLoadIdentity();
+	glLoadIdentity();
 	projection();
 	glPushMatrix(); //all
 	
@@ -675,6 +675,14 @@ void shoes(float lg,float wd,float hg, float r,float g,float b) {
 void bodybtm(float wd,float lg,float hg,float r, float g, float b) {
 	//glColor3f(r, g, b);
 	//top
+	GLuint textureArr[2];
+
+	if (changetext == false) {
+		textureArr[1] = loadTexture("metal2.bmp");
+	}
+	else { textureArr[1] = loadTexture("redmetal.bmp"); }
+
+
 	glBegin(GL_QUADS);
 	glVertex3f(0, hg, 0);
 	glVertex3f(wd, hg, 0);
@@ -721,15 +729,17 @@ void bodybtm(float wd,float lg,float hg,float r, float g, float b) {
 	glVertex3f((wd * 0.75), 0, lg);
 	glVertex3f((wd * 0.25), 0, lg);
 	glEnd();
-
+	glDeleteTextures(1, &textureArr[1]);
 }
 
 void body(float wd, float lg, float hg, float r, float g, float b) {
 	
 	GLuint textureArr[2];
-
-	textureArr[1] = loadTexture("metal2.bmp");
-
+	
+	if (changetext == false) {
+		textureArr[1] = loadTexture("metal2.bmp");
+	}
+	else { textureArr[1] = loadTexture("redmetal.bmp"); }
 	//glColor3f(r, g, b);
 	//top
 	glBegin(GL_QUADS);
@@ -884,6 +894,11 @@ void arm(float lr) {
 }
 
 void weapon() {
+
+	GLuint textureArr[2];
+
+	textureArr[1] = loadTexture("weapon.bmp");
+
 	glTranslatef(-0.1, -1.2, -0.1);
 	
 	glTranslatef(0, 0.5, 0);
@@ -891,6 +906,8 @@ void weapon() {
 	
 	glTranslatef(0.35, -5, 0.5);
 	cube(5, 0.5, 0.5, 0.443, 0.475, 0.494);
+
+	glDeleteTextures(1, &textureArr[1]);
 }
 
 void sheild() {
@@ -1030,6 +1047,12 @@ void bullet() {
 }
 
 void leg() {
+	GLuint textureArr[2];
+	if (changetext == false) {
+		textureArr[1] = loadTexture("metal2.bmp");
+	}
+	else { textureArr[1] = loadTexture("redmetal.bmp"); }
+
 	glPushMatrix();//whole leg
 	glTranslatef(0, -1.5, 0.5);
 	glRotatef(angle, 1, 0, 0);
@@ -1135,9 +1158,16 @@ void leg() {
 
 	glPopMatrix();//ankle
 	glPopMatrix();//knee cap
+
+	glDeleteTextures(1, &textureArr[1]);
 }
 
 void rightleg() {
+	GLuint textureArr[2];
+	if (changetext == false) {
+		textureArr[1] = loadTexture("metal2.bmp");
+	}
+	else { textureArr[1] = loadTexture("redmetal.bmp"); }
 
 	{
 		glPushMatrix();//whole leg
@@ -1242,10 +1272,15 @@ void rightleg() {
 
 
 	glPopMatrix(); //btm leg
+	glDeleteTextures(1, &textureArr[1]);
 }
 
 void waist() {
-
+	GLuint textureArr[2];
+	if (changetext == false) {
+		textureArr[1] = loadTexture("metal2.bmp");
+	}
+	else { textureArr[1] = loadTexture("redmetal.bmp"); }
 	{
 		// btm left cube
 		glPushMatrix();
@@ -1300,6 +1335,8 @@ void waist() {
 		linecube(1.5, 0.3, 2, 0, 0, 0, 1);
 		cube(1.5, 0.3, 2, 1, 1, 1);
 		glPopMatrix();
+
+		glDeleteTextures(1, &textureArr[1]);
 	}
 }
 
